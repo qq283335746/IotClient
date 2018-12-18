@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core'
+import {AlertController} from '@ionic/angular'
 import {Storage} from '@ionic/storage'
 import {RService} from './../../services/r.service'
 import {OrderInfo} from '../../models/OrderInfo'
@@ -9,7 +10,11 @@ import {OrderInfo} from '../../models/OrderInfo'
   styleUrls: ['./add-order.page.scss'],
 })
 export class AddOrderPage implements OnInit {
-  constructor(private storage: Storage, private r: RService) {
+  constructor(
+    private alert: AlertController,
+    private storage: Storage,
+    private r: RService
+  ) {
     this.orders = new Array<OrderInfo>()
   }
 
@@ -35,6 +40,18 @@ export class AddOrderPage implements OnInit {
     })
   }
 
+  isExistBarcode(barcode: string): boolean {
+    console.log('isExistBarcode--barcode--', barcode)
+    console.log('isExistBarcode--orders', this.orders)
+    if (!this.orders) return false
+
+    for (let entity of this.orders) {
+      if (entity && entity.Barcode === barcode) return true
+    }
+
+    return false
+  }
+
   onBarcodeChanged(): void {
     console.log('onBarcodeChanged')
     console.log('barcode--', this.barcode)
@@ -57,15 +74,13 @@ export class AddOrderPage implements OnInit {
     }
   }
 
-  isExistBarcode(barcode: string): boolean {
-    console.log('isExistBarcode--barcode--', barcode)
-    console.log('isExistBarcode--orders', this.orders)
-    if (!this.orders) return false
-
-    for (let entity of this.orders) {
-      if (entity && entity.Barcode === barcode) return true
+  onCommit(): void {
+    if (this.orders.length < 1) {
+      this.r.alert(null, null, this.r.M_Save_DataEmpty)
     }
 
-    return false
+    this.r.alert(null, null, this.r.M_Save_Success)
   }
+
+  
 }

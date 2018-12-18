@@ -12,3 +12,8 @@ https://beta.ionicframework.com/docs
 
 angular v6 docs:
 https://v6.angular.io/docs
+
+https://angular.io/guide/router
+
+samples:
+https://devdactic.com/ionic-4-login-angular/
