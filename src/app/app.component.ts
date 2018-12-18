@@ -10,11 +10,11 @@ import {StatusBar} from '@ionic-native/status-bar/ngx'
 })
 export class AppComponent {
   public appPages = [
-    {
-      title: '首页',
-      url: '/home',
-      icon: 'home',
-    },
+    // {
+    //   title: '首页',
+    //   url: '/home',
+    //   icon: 'home',
+    // },
     {
       title: '订单',
       url: '/addOrder',

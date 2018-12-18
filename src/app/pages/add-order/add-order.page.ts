@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core'
+import {Storage} from '@ionic/storage'
+import {RService} from './../../services/r.service'
+import {OrderInfo} from '../../models/OrderInfo'
 
 @Component({
   selector: 'app-addOrder',
@@ -6,7 +9,63 @@ import {Component, OnInit} from '@angular/core'
   styleUrls: ['./add-order.page.scss'],
 })
 export class AddOrderPage implements OnInit {
-  constructor() {}
+  constructor(private storage: Storage, private r: RService) {
+    this.orders = new Array<OrderInfo>()
+  }
 
-  ngOnInit() {}
+  orderInfo: OrderInfo = {
+    Id: '',
+    Barcode: '',
+    IsMainOrder: false,
+  }
+
+  barcode: string
+  orders: Array<OrderInfo>
+  isMainOrder: boolean
+
+  ngOnInit() {
+    this.loadData()
+  }
+
+  loadData(): void {
+    this.storage.get(this.r.OrdersKey).then(data => {
+      console.log('val--', data)
+      if (data) this.orders = data
+      //this.orders = val
+    })
+  }
+
+  onBarcodeChanged(): void {
+    console.log('onBarcodeChanged')
+    console.log('barcode--', this.barcode)
+    if (!this.barcode || this.barcode.trim() === '') return
+
+    console.log('isExistBarcode--', this.isExistBarcode(this.barcode))
+    if (!this.isExistBarcode(this.barcode)) {
+      this.orderInfo = {
+        Id: '0',
+        Barcode: this.barcode,
+        IsMainOrder: this.orders.length == 0,
+      }
+      //let orderInfo = new OrderInfo('0', this.barcode)
+      console.log('orderInfo--', this.orderInfo)
+      this.orders.push(this.orderInfo)
+
+      console.log('--orders--', this.orders)
+
+      this.storage.set(this.r.OrdersKey, this.orders)
+    }
+  }
+
+  isExistBarcode(barcode: string): boolean {
+    console.log('isExistBarcode--barcode--', barcode)
+    console.log('isExistBarcode--orders', this.orders)
+    if (!this.orders) return false
+
+    for (let entity of this.orders) {
+      if (entity && entity.Barcode === barcode) return true
+    }
+
+    return false
+  }
 }
