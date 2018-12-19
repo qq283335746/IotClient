@@ -21,13 +21,15 @@ ionic capacitor copy android
 ionic capacitor open android
 ionic capacitor sync android
 
+ionic cordova build:
+https://ionicframework.com/docs/intro/deploying/
+
 docs:
+https://beta.ionicframework.com/docs/building/android
+
 https://www.joshmorony.com/deploying-capacitor-applications-to-android-development-distribution/ --android
 
 https://www.joshmorony.com/deploying-capacitor-applications-to-ios-development-distribution/ --ios
-
-ionic cordova build:
-https://ionicframework.com/docs/intro/deploying/
 
 storage:
 https://beta.ionicframework.com/docs/building/storage/
@@ -46,4 +48,10 @@ https://developer.android.google.cn/studio/
 setRoot page:
 <ion-button href="/support" routerDirection="root">
 NavController：this.navCtrl.navigateRoot('/support');
+this.navCtrl.goRoot('/intro')
+this.navCtrl.navigateForward('/route')
+this.navCtrl.navigateBack('/route')
 https://www.joshmorony.com/converting-ionic-3-push-pop-navigation-to-angular-routing-in-ionic-4/
+
+Adding Background Geolocation to an Ionic 2 & 3 Application：
+https://www.joshmorony.com/adding-background-geolocation-to-an-ionic-2-application/
