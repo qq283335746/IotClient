@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>系统设置</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>接口地址</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>*</ion-label>
+        <ion-input style="float:left" required type="text" placeholder="请输入接口地址" [(ngModel)]="sysInfo.ServiceRootUrl"></ion-input>
+      </ion-item>
+      <!-- <ion-badge style="float:left">*</ion-badge> -->
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <div padding-top></div>
+  <ion-button expand="full" (click)="onSave()">保存</ion-button>
+</ion-content>

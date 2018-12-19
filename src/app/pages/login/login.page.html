@@ -1,10 +1,10 @@
 <ion-content padding>
   <ion-item>
-    <ion-input required type="text" placeholder="账号"></ion-input>
+    <ion-input required type="text" placeholder="账号" [(ngModel)]="userInfo.UserName"></ion-input>
   </ion-item>
   <ion-item>
-    <ion-input required type="text" placeholder="密码"></ion-input>
+    <ion-input required type="password" placeholder="密码" [(ngModel)]="userInfo.Password"></ion-input>
   </ion-item>
   <div padding-top></div>
-  <ion-button expand="full">登录</ion-button>
+  <ion-button expand="full" (click)="onLogin()">登录</ion-button>
 </ion-content>

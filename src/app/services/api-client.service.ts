@@ -3,6 +3,12 @@ import {Storage} from '@ionic/storage'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
 import {RService} from './r.service'
 import {UserInfo} from './../models/UserInfo'
+import {Observable} from 'rxjs'
+import {ApiResult} from '../models/ApiResult'
+
+const httpOptions = {
+  headers: new HttpHeaders({'Content-Type': 'application/json'}),
+}
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +30,11 @@ export class ApiClientService {
     UserId: '',
     UserName: '',
     RoleName: '',
+    Password: '',
+  }
+  apiResult: ApiResult = {
+    ResCode: -1,
+    Message: '',
   }
 
   userIsLogin: boolean = this.userInfo.UserName !== ''
@@ -34,7 +45,38 @@ export class ApiClientService {
     })
   }
 
+  setUserInfo(userInfo: UserInfo) {
+    this.storage.set(this.r.UserInfoKey, userInfo)
+  }
+
+  async login(userName: string, password: string) {
+    return this.userInfo
+    // return this.httpClient.post(this.r.Api_Login, {
+    //   userName: userName,
+    //   password: password,
+    // })
+  }
+  async loginOut() {
+    await this.removeData(this.r.UserInfoKey)
+    this.userInfo.UserName = ''
+  }
+
   httpGet(url: string) {
     return this.httpClient.get(url)
+  }
+
+  async getData(key: string) {
+    const res = await this.storage.get(key)
+    console.log('storage,Key is', key)
+    return res
+  }
+
+  async setData(key: string, value: any) {
+    const res = await this.storage.set(key, value)
+    console.log('storage', res)
+  }
+
+  async removeData(key: string) {
+    await this.storage.remove(key)
   }
 }

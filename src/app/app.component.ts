@@ -1,9 +1,10 @@
-import {ApiClientService} from './services/api-client.service'
 import {Component} from '@angular/core'
 import {Platform} from '@ionic/angular'
 import {SplashScreen} from '@ionic-native/splash-screen/ngx'
 import {StatusBar} from '@ionic-native/status-bar/ngx'
 import {Router} from '@angular/router'
+import {RService} from './services/r.service'
+import {ApiClientService} from './services/api-client.service'
 
 @Component({
   selector: 'app-root',
@@ -17,8 +18,18 @@ export class AppComponent {
     //   icon: 'home',
     // },
     {
-      title: '订单',
+      title: '订单扫描',
       url: '/addOrder',
+      icon: 'list',
+    },
+    {
+      title: '订单包装',
+      url: '/orderPackage',
+      icon: 'list',
+    },
+    {
+      title: '系统设置',
+      url: '/addSysEntry',
       icon: 'list',
     },
   ]
@@ -28,20 +39,34 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private router: Router,
+    private r: RService,
     private apiService: ApiClientService
   ) {
     this.initializeApp()
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       this.statusBar.styleDefault()
       this.splashScreen.hide()
 
-      var userInfo = this.apiService.userInfo
-      if (!this.apiService.userIsLogin) {
+      const serviceRootUrl = await this.apiService.getData(
+        this.r.ServiceRootUrlKey
+      )
+      console.log('serviceRootUrl--', serviceRootUrl)
+
+      if (!serviceRootUrl || serviceRootUrl === '') {
+        this.router.navigateByUrl('/addSysEntry')
+      } else if (!this.apiService.userIsLogin) {
         this.router.navigateByUrl('/login')
         //this.router.navigate(['/login'])
+      } else {
+        const userInfo = await this.apiService.getData(this.r.UserInfoKey)
+        if (userInfo.RoleName === this.r.RolesOptions[0]) {
+          this.router.navigateByUrl('/orderPackage')
+        } else {
+          this.router.navigateByUrl('/addOrder')
+        }
       }
     })
   }

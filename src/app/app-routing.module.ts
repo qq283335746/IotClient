@@ -13,6 +13,8 @@ const routes: Routes = [
     path: 'addOrder',
     loadChildren: './pages/add-order/add-order.module#AddOrderPageModule',
   },
+  { path: 'orderPackage', loadChildren: './pages/order-package/order-package.module#OrderPackagePageModule' },
+  { path: 'addSysEntry', loadChildren: './pages/add-sys-entry/add-sys-entry.module#AddSysEntryPageModule' },
 ]
 
 @NgModule({
