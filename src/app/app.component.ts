@@ -1,3 +1,4 @@
+import {UserInfo} from './models/UserInfo'
 import {Component} from '@angular/core'
 import {Platform} from '@ionic/angular'
 import {SplashScreen} from '@ionic-native/splash-screen/ngx'
@@ -53,11 +54,14 @@ export class AppComponent {
       const serviceRootUrl = await this.apiService.getData(
         this.r.ServiceRootUrlKey
       )
-      console.log('serviceRootUrl--', serviceRootUrl)
+      const userInfo: UserInfo = await this.apiService.getData(
+        this.r.UserInfoKey
+      )
+      console.log('userInfo--', userInfo)
 
       if (!serviceRootUrl || serviceRootUrl === '') {
         this.router.navigateByUrl('/addSysEntry')
-      } else if (!this.apiService.userIsLogin) {
+      } else if (!userInfo || userInfo.UserName == '') {
         this.router.navigateByUrl('/login')
         //this.router.navigate(['/login'])
       } else {
