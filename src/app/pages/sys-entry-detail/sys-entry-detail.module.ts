@@ -5,12 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddSysEntryPage } from './add-sys-entry.page';
+import { SysEntryDetailPage } from './sys-entry-detail.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddSysEntryPage
+    component: SysEntryDetailPage
   }
 ];
 
@@ -21,6 +21,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AddSysEntryPage]
+  declarations: [SysEntryDetailPage]
 })
-export class AddSysEntryPageModule {}
+export class SysEntryDetailPageModule {}

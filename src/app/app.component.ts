@@ -20,18 +20,18 @@ export class AppComponent {
     // },
     {
       title: '订单扫描',
-      url: '/addOrder',
-      icon: 'list',
+      url: '/orderDetail',
+      icon: 'qr-scanner',
     },
     {
       title: '订单包装',
-      url: '/orderPackage',
-      icon: 'list',
+      url: '/orderPackageDetail',
+      icon: 'rose',
     },
     {
       title: '系统设置',
-      url: '/addSysEntry',
-      icon: 'list',
+      url: '/sysEntryDetail',
+      icon: 'build',
     },
   ]
 
@@ -57,19 +57,18 @@ export class AppComponent {
       const userInfo: UserInfo = await this.apiService.getData(
         this.r.UserInfoKey
       )
-      console.log('userInfo--', userInfo)
 
       if (!serviceRootUrl || serviceRootUrl === '') {
-        this.router.navigateByUrl('/addSysEntry')
+        this.router.navigateByUrl('/sysEntryDetail')
       } else if (!userInfo || userInfo.UserName == '') {
         this.router.navigateByUrl('/login')
         //this.router.navigate(['/login'])
       } else {
         const userInfo = await this.apiService.getData(this.r.UserInfoKey)
         if (userInfo.RoleName === this.r.RolesOptions[0]) {
-          this.router.navigateByUrl('/orderPackage')
+          this.router.navigateByUrl('/orderPackageDetail')
         } else {
-          this.router.navigateByUrl('/addOrder')
+          this.router.navigateByUrl('/orderDetail')
         }
       }
     })

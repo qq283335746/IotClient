@@ -10,11 +10,20 @@ const routes: Routes = [
   {path: 'home', loadChildren: './pages/home/home.module#HomePageModule'},
   {path: 'login', loadChildren: './pages/login/login.module#LoginPageModule'},
   {
-    path: 'addOrder',
-    loadChildren: './pages/add-order/add-order.module#AddOrderPageModule',
+    path: 'orderDetail',
+    loadChildren:
+      './pages/order-detail/order-detail.module#OrderDetailPageModule',
   },
-  { path: 'orderPackage', loadChildren: './pages/order-package/order-package.module#OrderPackagePageModule' },
-  { path: 'addSysEntry', loadChildren: './pages/add-sys-entry/add-sys-entry.module#AddSysEntryPageModule' },
+  {
+    path: 'orderPackageDetail',
+    loadChildren:
+      './pages/order-package-detail/order-package-detail.module#OrderPackageDetailPageModule',
+  },
+  {
+    path: 'sysEntryDetail',
+    loadChildren:
+      './pages/sys-entry-detail/sys-entry-detail.module#SysEntryDetailPageModule',
+  },
 ]
 
 @NgModule({

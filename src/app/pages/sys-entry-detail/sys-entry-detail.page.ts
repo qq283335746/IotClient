@@ -5,15 +5,15 @@ import {RService} from 'src/app/services/r.service'
 import {ApiClientService} from './../../services/api-client.service'
 
 @Component({
-  selector: 'app-add-sys-entry',
-  templateUrl: './add-sys-entry.page.html',
-  styleUrls: ['./add-sys-entry.page.scss'],
+  selector: 'app-sys-entry-detail',
+  templateUrl: './sys-entry-detail.page.html',
+  styleUrls: ['./sys-entry-detail.page.scss'],
 })
-export class AddSysEntryPage implements OnInit {
+export class SysEntryDetailPage implements OnInit {
   constructor(
+    private router: Router,
     private r: RService,
-    private apiService: ApiClientService,
-    private router: Router
+    private apiService: ApiClientService
   ) {}
 
   sysInfo: SysInfo = {
@@ -24,9 +24,7 @@ export class AddSysEntryPage implements OnInit {
 
   loadData() {}
 
-  onSave() {
-    console.log('onSave--')
-
+  async onSave() {
     if (
       !this.sysInfo.ServiceRootUrl ||
       this.sysInfo.ServiceRootUrl.trim() === ''
@@ -35,14 +33,14 @@ export class AddSysEntryPage implements OnInit {
       return false
     }
 
-    this.r.setServiceRootUrl(this.sysInfo.ServiceRootUrl)
-    let api = this.apiService
-    let router = this.router
+    await this.apiService.setServiceRootUrl(this.sysInfo.ServiceRootUrl)
+    let currApi = this.apiService
+    let currRouter = this.router
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      if (!api.userIsLogin) {
-        router.navigateByUrl('/login')
+      if (!currApi.userIsLogin) {
+        currRouter.navigateByUrl('/login')
       } else {
-        router.navigateByUrl('/addOrder')
+        currRouter.navigateByUrl('/orderDetail')
       }
     })
   }

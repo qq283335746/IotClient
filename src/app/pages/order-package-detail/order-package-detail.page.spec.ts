@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddSysEntryPage } from './add-sys-entry.page';
+import { OrderPackageDetailPage } from './order-package-detail.page';
 
-describe('AddSysEntryPage', () => {
-  let component: AddSysEntryPage;
-  let fixture: ComponentFixture<AddSysEntryPage>;
+describe('OrderPackageDetailPage', () => {
+  let component: OrderPackageDetailPage;
+  let fixture: ComponentFixture<OrderPackageDetailPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AddSysEntryPage ],
+      declarations: [ OrderPackageDetailPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddSysEntryPage);
+    fixture = TestBed.createComponent(OrderPackageDetailPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

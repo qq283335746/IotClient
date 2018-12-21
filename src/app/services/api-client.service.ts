@@ -19,11 +19,8 @@ export class ApiClientService {
     private httpClient: HttpClient,
     private r: RService
   ) {
-    console.log('userInfo--', this.userInfo)
-    if (this.userInfo.UserName === '') {
-      this.getUserInfo()
-      console.log('userInfo--', this.userInfo)
-    }
+    this.getServiceRootUrl()
+    this.getUserInfo()
   }
 
   userInfo: UserInfo = {
@@ -38,11 +35,32 @@ export class ApiClientService {
   }
 
   userIsLogin: boolean = this.userInfo.UserName !== ''
+  //数据存储时Key的前缀
+  dataKeyPre: string = this.userInfo.UserName + '_'
 
-  getUserInfo() {
-    this.storage.get(this.r.UserInfoKey).then(data => {
+  async getServiceRootUrl() {
+    if (this.r.ServiceRootUrl && this.r.ServiceRootUrl.trim() !== '') {
+      return this.r.ServiceRootUrl
+    }
+    const data = await this.getData(this.r.ServiceRootUrlKey)
+    if (data) this.r.ServiceRootUrl = data
+
+    return this.r.ServiceRootUrl
+  }
+  async setServiceRootUrl(value: string) {
+    await this.setData(this.r.ServiceRootUrlKey, value)
+  }
+
+  async getUserInfo() {
+    if (this.userInfo && this.userInfo.UserName !== '') {
+      return this.userInfo
+    }
+    if (!this.userInfo || this.userInfo.UserName.trim() === '') {
+      let data = await this.getData(this.r.UserInfoKey)
       if (data) this.userInfo = data
-    })
+    }
+
+    return this.userInfo
   }
 
   setUserInfo(userInfo: UserInfo) {
@@ -66,17 +84,14 @@ export class ApiClientService {
   }
 
   async getData(key: string) {
-    const res = await this.storage.get(key)
-    console.log('storage,Key is', key)
-    return res
+    return await this.storage.get(this.dataKeyPre + key)
   }
 
   async setData(key: string, value: any) {
-    const res = await this.storage.set(key, value)
-    console.log('storage', res)
+    await this.storage.set(this.dataKeyPre + key, value)
   }
 
   async removeData(key: string) {
-    await this.storage.remove(key)
+    await this.storage.remove(this.dataKeyPre + key)
   }
 }

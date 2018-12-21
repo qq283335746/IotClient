@@ -1,46 +1,27 @@
 import {Injectable} from '@angular/core'
-import {Storage} from '@ionic/storage'
 import {AlertController} from '@ionic/angular'
-import {Observable, of} from 'rxjs'
-import {async} from '@angular/core/testing'
 
 @Injectable({
   providedIn: 'root',
 })
 export class RService {
-  constructor(public alertCtrl: AlertController, private storage: Storage) {
+  constructor(public alertCtrl: AlertController) {
     console.log('RService.constructor--')
-    this.getServiceRootUrl()
   }
 
   RolesOptions: Array<string> = ['OrderPackage']
 
   ServiceRootUrl: string
-  getServiceRootUrl() {
-    if (this.ServiceRootUrl && this.ServiceRootUrl.trim() !== '') {
-      console.log('this.ServiceRootUrl is not empty')
-      return
-    }
-    this.storage.get(this.ServiceRootUrlKey).then(data => {
-      console.log('getServiceRootUrl--data', data)
-      if (data) this.ServiceRootUrl = data
-      console.log(
-        'getServiceRootUrl--this.ServiceRootUrl--',
-        this.ServiceRootUrl
-      )
-    })
-  }
-  setServiceRootUrl(serviceRootUrl: string) {
-    this.storage.set(this.ServiceRootUrlKey, serviceRootUrl)
-  }
-
+  ServiceRootUrlKey: string = 'ServiceRootUrl'
   Api_Login: string = this.ServiceRootUrl + '/Login'
   OrdersKey: string = 'Orders'
-  ServiceRootUrlKey: string = 'ServiceRootUrl'
+  OrderPackagesKey: string = 'OrderPackages'
   UserInfoKey: string = 'UserInfo'
+  GuidEmpty: string = '00000000-0000-0000-0000-000000000000'
   M_Save_Success: string = '恭喜您，操作成功！'
   M_Save_DataEmpty: string = '无任何可提交的数据！'
   M_Form_Field_Empty: string = '带有“*”符号的为必须项，请检查'
+  M_Delete_Confirm: string = '确定要删除操作吗？'
 
   async alert(title: string, subTitle: string, message: string) {
     if (!title || title.trim() === '') title = '提示'
@@ -78,6 +59,31 @@ export class RService {
     await alert.present()
   }
 
+  async alertConfirm(title: string, message: string, callback: Function) {
+    const alert = await this.alertCtrl.create({
+      header: title,
+      message: message,
+      buttons: [
+        {
+          text: '取消',
+          role: 'cancel',
+          //cssClass: 'secondary',
+          handler: blah => {
+            //console.log('Confirm Cancel: blah')
+          },
+        },
+        {
+          text: '确定',
+          handler: () => {
+            callback()
+          },
+        },
+      ],
+    })
+
+    await alert.present()
+  }
+
   findIndex(array: any, id: number) {
     var low = 0,
       high = array.length,
@@ -87,5 +93,37 @@ export class RService {
       array[mid]._Id < id ? (low = mid + 1) : (high = mid)
     }
     return low
+  }
+
+  getRndOrderCode(): string {
+    const date = new Date()
+
+    return (
+      date.getFullYear().toString() +
+      (date.getMonth() + 1).toString().padStart(2, '0') +
+      date
+        .getDate()
+        .toString()
+        .padStart(2, '0') +
+      date
+        .getHours()
+        .toString()
+        .padStart(2, '0') +
+      date
+        .getMinutes()
+        .toString()
+        .padStart(2, '0') +
+      date
+        .getSeconds()
+        .toString()
+        .padStart(2, '0') +
+      this.getRndCode(11, 99).toString()
+    )
+  }
+
+  getRndCode(min: number, max: number) {
+    var range = max - min
+    var rand = Math.random()
+    return min + Math.round(rand * range)
   }
 }
