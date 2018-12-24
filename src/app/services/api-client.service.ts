@@ -68,6 +68,10 @@ export class ApiClientService {
   }
 
   async login(userName: string, password: string) {
+    const url = this.r.ServiceRootUrl + '/Services/PdaService.svc/GetHelloWord'
+    const loginResult = this.httpClient.get(url).subscribe(res => {
+      console.log(res)
+    })
     return this.userInfo
     // return this.httpClient.post(this.r.Api_Login, {
     //   userName: userName,

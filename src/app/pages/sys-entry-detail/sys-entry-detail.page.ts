@@ -44,4 +44,12 @@ export class SysEntryDetailPage implements OnInit {
       }
     })
   }
+
+  async onLoginOut() {
+    await this.apiService.loginOut()
+    let currRouter = this.router
+    this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
+      currRouter.navigateByUrl('/login')
+    })
+  }
 }

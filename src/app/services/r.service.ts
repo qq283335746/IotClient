@@ -50,7 +50,7 @@ export class RService {
       message: message,
       buttons: [
         {
-          text: 'Ok',
+          text: '确定',
           handler: () => {
             callback()
           },
