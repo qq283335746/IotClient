@@ -1,3 +1,4 @@
+import {Router} from '@angular/router'
 import {ApiClientService} from './../../services/api-client.service'
 import {Component, OnInit} from '@angular/core'
 import {RService} from 'src/app/services/r.service'
@@ -10,7 +11,11 @@ import {OrderInfo} from 'src/app/models/OrderInfo'
   styleUrls: ['./order-package-detail.page.scss'],
 })
 export class OrderPackageDetailPage implements OnInit {
-  constructor(private apiService: ApiClientService, private r: RService) {}
+  constructor(
+    private router: Router,
+    private apiService: ApiClientService,
+    private r: RService
+  ) {}
 
   orderPackageInfo: OrderPackageInfo = {
     ParentOrder: this.r.getRndOrderCode(),
@@ -79,14 +84,14 @@ export class OrderPackageDetailPage implements OnInit {
     })
   }
 
-  onCommit(): void {
+  async onCommit(): Promise<void> {
     let curr = this
-    this.r.alertAndCallback(
+    this.r.alertConfirm(
       null,
-      null,
-      this.r.M_Save_Success,
-      async function() {
+      this.r.M_Commit_Confirm,
+      await async function() {
         await curr.clearData()
+        curr.r.alert(null, null, curr.r.M_Save_Success)
       }
     )
   }

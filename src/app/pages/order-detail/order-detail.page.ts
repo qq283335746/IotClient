@@ -24,6 +24,12 @@ export class OrderDetailPage implements OnInit {
     IsMainOrder: false,
   }
 
+  orderInfoSelected: OrderInfo = {
+    Id: '',
+    Barcode: '',
+    IsMainOrder: false,
+  }
+
   barcode: string
   orders: Array<OrderInfo>
   isMainOrder: boolean
@@ -57,6 +63,14 @@ export class OrderDetailPage implements OnInit {
       return
     }
 
+    if (this.orders.length == 0) {
+      this.orderInfoSelected = {
+        Id: this.r.GuidEmpty,
+        Barcode: this.barcode,
+        IsMainOrder: true,
+      }
+    }
+
     this.orderInfo = {
       Id: this.r.GuidEmpty,
       Barcode: this.barcode,
@@ -82,16 +96,34 @@ export class OrderDetailPage implements OnInit {
     if (this.orders.length < 1) {
       this.r.alert(null, null, this.r.M_Save_DataEmpty)
     }
+    if (!this.commitChecked()) return
 
     let curr = this
-    this.r.alertAndCallback(
+    this.r.alertConfirm(
       null,
-      null,
-      this.r.M_Save_Success,
-      async function() {
+      this.r.M_Commit_Confirm,
+      await async function() {
         await curr.clearData()
+        curr.r.alert(null, null, curr.r.M_Save_Success)
       }
     )
+  }
+
+  commitChecked(): boolean {
+    if (!this.orders) return false
+    let mainOrderNum: number = 0
+    let curr = this
+    for (let entity of curr.orders) {
+      if (entity && entity.IsMainOrder) {
+        mainOrderNum++
+      }
+    }
+    if (mainOrderNum !== 1) {
+      this.r.alert(null, null, this.r.M_Order_ExistOne)
+      return false
+    }
+
+    return true
   }
 
   async clearData(): Promise<void> {

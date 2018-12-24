@@ -22,6 +22,8 @@ export class RService {
   M_Save_DataEmpty: string = '无任何可提交的数据！'
   M_Form_Field_Empty: string = '带有“*”符号的为必须项，请检查'
   M_Delete_Confirm: string = '确定要删除操作吗？'
+  M_Commit_Confirm: string = '确定要提交吗？'
+  M_Order_ExistOne: string = '必须设置一个且仅一个订单号作为主订单'
 
   async alert(title: string, subTitle: string, message: string) {
     if (!title || title.trim() === '') title = '提示'
