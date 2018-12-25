@@ -13,6 +13,7 @@ export class RService {
 
   ServiceRootUrl: string
   ServiceRootUrlKey: string = 'ServiceRootUrl'
+  Api_Hello: string = '/Services/PdaService.svc/GetHelloWord'
   Api_Login: string = this.ServiceRootUrl + '/Login'
   OrdersKey: string = 'Orders'
   OrderPackagesKey: string = 'OrderPackages'

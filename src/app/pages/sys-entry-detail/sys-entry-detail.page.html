@@ -9,9 +9,11 @@
 
 <ion-content padding>
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>接口地址</ion-card-title>
-    </ion-card-header>
+    <ion-item>
+      <ion-label>接口地址</ion-label>
+      <ion-button fill="clear" slot="end" (click)="onApiTest()">测试</ion-button>
+    </ion-item>
+
     <ion-card-content>
       <ion-item>
         <ion-label>*</ion-label>
@@ -25,5 +27,5 @@
 
   <div padding-top></div>
   <ion-button expand="full" (click)="onSave()">保存</ion-button>
-  <ion-button expand="full" (click)="onLoginOut()">退出登录</ion-button>
+  <ion-button expand="full" (click)="onLoginOut()" disabled="SysInfo.IsLoginOut">退出登录</ion-button>
 </ion-content>

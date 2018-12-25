@@ -1,3 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button size="small" fill="clear" routerDirection="root" [routerLink]="['/sysEntryDetail']">设置</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 <ion-content padding>
   <ion-item>
     <ion-input required type="text" placeholder="账号" [(ngModel)]="userInfo.UserName"></ion-input>

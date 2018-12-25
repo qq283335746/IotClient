@@ -5,6 +5,7 @@ import {RService} from './r.service'
 import {UserInfo} from './../models/UserInfo'
 import {Observable} from 'rxjs'
 import {ApiResult} from '../models/ApiResult'
+import {async} from '@angular/core/testing'
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'}),
@@ -37,6 +38,14 @@ export class ApiClientService {
   userIsLogin: boolean = this.userInfo.UserName !== ''
   //数据存储时Key的前缀
   dataKeyPre: string = this.userInfo.UserName + '_'
+
+  async getHelloWord() {
+    this.httpGet((await this.getServiceRootUrl()) + this.r.Api_Hello).subscribe(
+      res => {
+        console.log('getHelloWord--', res)
+      }
+    )
+  }
 
   async getServiceRootUrl() {
     if (this.r.ServiceRootUrl && this.r.ServiceRootUrl.trim() !== '') {

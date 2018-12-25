@@ -18,11 +18,17 @@ export class SysEntryDetailPage implements OnInit {
 
   sysInfo: SysInfo = {
     ServiceRootUrl: this.r.ServiceRootUrl,
+    IsLoginOut: this.apiService.userIsLogin,
   }
 
   ngOnInit() {}
 
   loadData() {}
+
+  async onApiTest() {
+    console.log('onApiTest--')
+    await this.apiService.getHelloWord()
+  }
 
   async onSave() {
     if (
