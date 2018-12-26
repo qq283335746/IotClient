@@ -1,4 +1,4 @@
 export class SysInfo {
-  public ServiceRootUrl: string
+  public ApiRootUrl: string
   public IsLoginOut: boolean
 }

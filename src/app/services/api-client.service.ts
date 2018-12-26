@@ -30,10 +30,6 @@ export class ApiClientService {
     RoleName: '',
     Password: '',
   }
-  apiResult: ApiResult = {
-    ResCode: -1,
-    Message: '',
-  }
 
   userIsLogin: boolean = this.userInfo.UserName !== ''
   //数据存储时Key的前缀
@@ -74,6 +70,11 @@ export class ApiClientService {
 
   setUserInfo(userInfo: UserInfo) {
     this.storage.set(this.r.UserInfoKey, userInfo)
+  }
+
+  async apiTest(apiRootUrl:string){
+    const apiUrl = apiRootUrl+"/Order/GetHelloAsync";
+    return this.httpClient.get<ApiResult>(apiUrl).toPromise()
   }
 
   async login(userName: string, password: string) {

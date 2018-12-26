@@ -1,8 +1,10 @@
-import {Router} from '@angular/router'
+//import {Router} from '@angular/router'
 import {Component, OnInit} from '@angular/core'
 import {SysInfo} from 'src/app/models/SysInfo'
 import {RService} from 'src/app/services/r.service'
 import {ApiClientService} from './../../services/api-client.service'
+import { ApiResult } from 'src/app/models/ApiResult';
+import { MenuController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-sys-entry-detail',
@@ -11,51 +13,74 @@ import {ApiClientService} from './../../services/api-client.service'
 })
 export class SysEntryDetailPage implements OnInit {
   constructor(
-    private router: Router,
+    private menuCtrl:MenuController,
+    private navCtrl:NavController,
+    //private router: Router,
     private r: RService,
     private apiService: ApiClientService
   ) {}
 
   sysInfo: SysInfo = {
-    ServiceRootUrl: this.r.ServiceRootUrl,
+    ApiRootUrl: this.r.ServiceRootUrl,
     IsLoginOut: this.apiService.userIsLogin,
   }
 
-  ngOnInit() {}
+  apiResult:ApiResult={
+    ResCode:-1,
+    Message:'',
+    Data:{}
+  }
+
+  ngOnInit() {
+    this.menuCtrl.enable(this.apiService.userIsLogin);
+  }
 
   loadData() {}
 
   async onApiTest() {
     console.log('onApiTest--')
-    await this.apiService.getHelloWord()
+    if(!this.sysInfo.ApiRootUrl || this.sysInfo.ApiRootUrl.trim() === ''){
+      this.r.alert(null,null,this.r.M_ApiRootUrlInvalidError)
+      return;
+    }
+    try{
+      const res = await this.apiService.apiTest(this.sysInfo.ApiRootUrl);
+      console.log('apiTest result:', res);
+      if(!res){
+        this.r.alert(null,null,this.r.M_ApiRootUrlInvalidError);
+      }
+      else{
+        this.r.alert(null,null,this.r.M_Save_Success);
+      }
+    }
+    catch(e){
+      this.r.alert(null,null,this.r.M_ApiRootUrlInvalidError);
+    }
   }
 
   async onSave() {
     if (
-      !this.sysInfo.ServiceRootUrl ||
-      this.sysInfo.ServiceRootUrl.trim() === ''
+      !this.sysInfo.ApiRootUrl ||
+      this.sysInfo.ApiRootUrl.trim() === ''
     ) {
       this.r.alert(null, null, this.r.M_Form_Field_Empty)
       return false
     }
 
-    await this.apiService.setServiceRootUrl(this.sysInfo.ServiceRootUrl)
-    let currApi = this.apiService
-    let currRouter = this.router
+    await this.apiService.setServiceRootUrl(this.sysInfo.ApiRootUrl);
+
+    let currApi = this.apiService;
+    let currRouter = this.navCtrl
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      if (!currApi.userIsLogin) {
-        currRouter.navigateByUrl('/login')
-      } else {
-        currRouter.navigateByUrl('/orderDetail')
-      }
+      if(!currApi.userIsLogin) currRouter.navigateRoot('/login');
     })
   }
 
   async onLoginOut() {
     await this.apiService.loginOut()
-    let currRouter = this.router
+    let currRouter = this.navCtrl
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      currRouter.navigateByUrl('/login')
+      currRouter.navigateRoot('/login');
     })
   }
 }

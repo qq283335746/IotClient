@@ -3,6 +3,7 @@ import {AlertController} from '@ionic/angular'
 import {RService} from './../../services/r.service'
 import {ApiClientService} from './../../services/api-client.service'
 import {OrderInfo} from '../../models/OrderInfo'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-orderDetail',
@@ -11,11 +12,12 @@ import {OrderInfo} from '../../models/OrderInfo'
 })
 export class OrderDetailPage implements OnInit {
   constructor(
+    private router: Router,
     private alert: AlertController,
     private r: RService,
     private apiService: ApiClientService
   ) {
-    this.orders = new Array<OrderInfo>()
+      this.orders = new Array<OrderInfo>()
   }
 
   orderInfo: OrderInfo = {
@@ -34,8 +36,10 @@ export class OrderDetailPage implements OnInit {
   orders: Array<OrderInfo>
   isMainOrder: boolean
 
-  ngOnInit() {
-    this.loadData()
+  async ngOnInit() {
+    console.log('ngOnInit--');
+    
+    await this.loadData();
   }
 
   async loadData(): Promise<void> {
