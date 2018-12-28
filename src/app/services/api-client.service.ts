@@ -3,9 +3,9 @@ import {Storage} from '@ionic/storage'
 import {HttpClient, HttpHeaders} from '@angular/common/http'
 import {RService} from './r.service'
 import {UserInfo} from './../models/UserInfo'
-import {Observable} from 'rxjs'
-import {ApiResult} from '../models/ApiResult'
-import {async} from '@angular/core/testing'
+import { ApiTestResult } from '../models/ApiTestResult';
+import { LoginResult } from '../models/LoginResult';
+import { LoginRequestInfo } from '../models/LoginRequestInfo';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'}),
@@ -20,7 +20,7 @@ export class ApiClientService {
     private httpClient: HttpClient,
     private r: RService
   ) {
-    this.getServiceRootUrl()
+    this.getApiRootUrl()
     this.getUserInfo()
   }
 
@@ -36,24 +36,24 @@ export class ApiClientService {
   dataKeyPre: string = this.userInfo.UserName + '_'
 
   async getHelloWord() {
-    this.httpGet((await this.getServiceRootUrl()) + this.r.Api_Hello).subscribe(
+    this.httpGet((await this.getApiRootUrl()) + this.r.Api_Hello).subscribe(
       res => {
         console.log('getHelloWord--', res)
       }
     )
   }
 
-  async getServiceRootUrl() {
-    if (this.r.ServiceRootUrl && this.r.ServiceRootUrl.trim() !== '') {
-      return this.r.ServiceRootUrl
+  async getApiRootUrl():Promise<string> {
+    if (this.r.ApiRootUrl && this.r.ApiRootUrl.trim() !== '') {
+      return this.r.ApiRootUrl
     }
-    const data = await this.getData(this.r.ServiceRootUrlKey)
-    if (data) this.r.ServiceRootUrl = data
+    const data = await this.getData(this.r.ApiRootUrlKey)
+    if (data) this.r.ApiRootUrl = data
 
-    return this.r.ServiceRootUrl
+    return this.r.ApiRootUrl
   }
-  async setServiceRootUrl(value: string) {
-    await this.setData(this.r.ServiceRootUrlKey, value)
+  async setApiRootUrl(value: string) {
+    await this.setData(this.r.ApiRootUrlKey, value)
   }
 
   async getUserInfo() {
@@ -74,19 +74,20 @@ export class ApiClientService {
 
   async apiTest(apiRootUrl:string){
     const apiUrl = apiRootUrl+"/Order/GetHelloAsync";
-    return this.httpClient.get<ApiResult>(apiUrl).toPromise()
+    return this.httpClient.get<ApiTestResult>(apiUrl).toPromise();
   }
 
-  async login(userName: string, password: string) {
-    const url = this.r.ServiceRootUrl + '/Services/PdaService.svc/GetHelloWord'
-    const loginResult = this.httpClient.get(url).subscribe(res => {
-      console.log(res)
-    })
-    return this.userInfo
-    // return this.httpClient.post(this.r.Api_Login, {
-    //   userName: userName,
-    //   password: password,
-    // })
+  async LoginAsync(userName: string, password: string) {
+    const apiRootUrl = await this.getApiRootUrl();
+    const apiUrl = apiRootUrl + '/Order/LoginAsync'
+    let requestInfo:LoginRequestInfo={
+      AppId:this.r.AppId,
+      AppSecret:this.r.AppSecret,
+      Token:"",
+      UserName:userName,
+      Password:password
+    }
+    return this.httpClient.post<LoginResult>(apiUrl,requestInfo).toPromise();
   }
   async loginOut() {
     await this.removeData(this.r.UserInfoKey)

@@ -6,7 +6,6 @@ import {StatusBar} from '@ionic-native/status-bar/ngx'
 //import {Router} from '@angular/router'
 import {RService} from './services/r.service'
 import {ApiClientService} from './services/api-client.service'
-import { type } from 'os';
 
 @Component({
   selector: 'app-root',
@@ -53,14 +52,14 @@ export class AppComponent {
       this.statusBar.styleDefault()
       this.splashScreen.hide()
 
-      const serviceRootUrl = await this.apiService.getData(
-        this.r.ServiceRootUrlKey
+      const apiRootUrl = await this.apiService.getData(
+        this.r.ApiRootUrlKey
       )
       const userInfo: UserInfo = await this.apiService.getData(
         this.r.UserInfoKey
       )
 
-      if (!serviceRootUrl || serviceRootUrl === '') {
+      if (!apiRootUrl || apiRootUrl === '') {
         await this.navCtrl.navigateRoot('/sysEntryDetail');
         //this.router.navigateByUrl('/sysEntryDetail')
       } else if (!userInfo || userInfo.UserName == '') {

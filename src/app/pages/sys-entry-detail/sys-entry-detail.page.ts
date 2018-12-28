@@ -21,14 +21,13 @@ export class SysEntryDetailPage implements OnInit {
   ) {}
 
   sysInfo: SysInfo = {
-    ApiRootUrl: this.r.ServiceRootUrl,
+    ApiRootUrl: this.r.ApiRootUrl,
     IsLoginOut: this.apiService.userIsLogin,
   }
 
   apiResult:ApiResult={
     ResCode:-1,
-    Message:'',
-    Data:{}
+    Message:''
   }
 
   ngOnInit() {
@@ -67,10 +66,10 @@ export class SysEntryDetailPage implements OnInit {
       return false
     }
 
-    await this.apiService.setServiceRootUrl(this.sysInfo.ApiRootUrl);
+    await this.apiService.setApiRootUrl(this.sysInfo.ApiRootUrl);
 
     let currApi = this.apiService;
-    let currRouter = this.navCtrl
+    let currRouter = this.navCtrl;
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
       if(!currApi.userIsLogin) currRouter.navigateRoot('/login');
     })

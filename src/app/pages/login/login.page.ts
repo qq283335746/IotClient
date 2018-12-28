@@ -26,14 +26,16 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
 
   async onLogin() {
-    const res = await this.apiService.login(
+    const res = await this.apiService.LoginAsync(
       this.userInfo.UserName,
       this.userInfo.Password
     )
 
-    await this.apiService.setData(this.r.UserInfoKey, this.userInfo)
-    this.router.navigateByUrl('/orderDetail')
+    console.log('login--',res);
 
-    return false
+    //await this.apiService.setData(this.r.UserInfoKey, this.userInfo)
+    //this.router.navigateByUrl('/orderDetail')
+
+    //return false
   }
 }

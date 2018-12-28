@@ -1,5 +1,5 @@
-import {Injectable} from '@angular/core'
-import {AlertController} from '@ionic/angular'
+import { Injectable } from '@angular/core'
+import { AlertController } from '@ionic/angular'
 
 @Injectable({
   providedIn: 'root',
@@ -10,18 +10,19 @@ export class RService {
   }
 
   RolesOptions: Array<string> = ['OrderPackage']
-
-  ServiceRootUrl: string
-  ServiceRootUrlKey: string = 'ServiceRootUrl'
+  AppId: string = "";
+  AppSecret: string = "";
+  ApiRootUrl: string
+  ApiRootUrlKey: string = 'ApiRootUrl'
   Api_Hello: string = '/Services/PdaService.svc/GetHelloWord'
-  Api_Login: string = this.ServiceRootUrl + '/Login'
+  Api_Login: string = this.ApiRootUrl + '/Login'
   OrdersKey: string = 'Orders'
   OrderPackagesKey: string = 'OrderPackages'
   UserInfoKey: string = 'UserInfo'
   GuidEmpty: string = '00000000-0000-0000-0000-000000000000'
   M_Save_Success: string = '恭喜您，操作成功！'
   M_Save_DataEmpty: string = '无任何可提交的数据！'
-  M_ApiRootUrlInvalidError:string='请正确输入接口地址！'
+  M_ApiRootUrlInvalidError: string = '请正确输入接口地址！'
   M_Form_Field_Empty: string = '带有“*”符号的为必须项，请检查'
   M_Delete_Confirm: string = '确定要删除操作吗？'
   M_Commit_Confirm: string = '确定要提交吗？'
