@@ -1,6 +1,9 @@
 ubuntu environment:
 /etc/environment
 
+ubuntu android studio:
+sudo /home/tygasoft/ProgramFiles/android-studio/bin/studio.sh /usr/local/bin/android-studio/studio.sh
+
 root权限：
 sudo -s
 rm -r ionic

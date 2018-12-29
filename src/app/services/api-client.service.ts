@@ -27,8 +27,9 @@ export class ApiClientService {
   userInfo: UserInfo = {
     UserId: '',
     UserName: '',
-    RoleName: '',
     Password: '',
+    Roles:[],
+    Token:''
   }
 
   userIsLogin: boolean = this.userInfo.UserName !== ''
