@@ -1,9 +1,10 @@
-import {Component, OnInit} from '@angular/core'
-import {AlertController} from '@ionic/angular'
-import {RService} from './../../services/r.service'
-import {ApiClientService} from './../../services/api-client.service'
-import {OrderInfo} from '../../models/OrderInfo'
+import { Component, OnInit } from '@angular/core'
+import { RService } from './../../services/r.service'
+import { ApiClientService } from './../../services/api-client.service'
+import { OrderInfo } from '../../models/OrderInfo'
 import { Router } from '@angular/router';
+import { OrderRequestInfo } from 'src/app/models/OrderRequestInfo';
+import { UserInfo } from 'src/app/models/UserInfo';
 
 @Component({
   selector: 'app-orderDetail',
@@ -13,12 +14,13 @@ import { Router } from '@angular/router';
 export class OrderDetailPage implements OnInit {
   constructor(
     private router: Router,
-    private alert: AlertController,
     private r: RService,
     private apiService: ApiClientService
   ) {
-      this.orders = new Array<OrderInfo>()
+    this.orders = new Array<OrderInfo>()
   }
+
+  userInfo = new UserInfo();
 
   orderInfo: OrderInfo = {
     Id: '',
@@ -38,11 +40,12 @@ export class OrderDetailPage implements OnInit {
 
   async ngOnInit() {
     console.log('ngOnInit--');
-    
+
     await this.loadData();
   }
 
   async loadData(): Promise<void> {
+    //this.userInfo
     this.orders = await this.apiService.getData(this.r.OrdersKey)
     if (!this.orders) this.orders = []
   }
@@ -89,7 +92,7 @@ export class OrderDetailPage implements OnInit {
 
   onDelete(): void {
     let curr = this
-    this.r.alertConfirm(null, this.r.M_Delete_Confirm, async function() {
+    this.r.alertConfirm(null, this.r.M_Delete_Confirm, async function () {
       curr.orders = []
       await curr.apiService.removeData(curr.r.OrdersKey)
       curr.r.alert(null, null, curr.r.M_Save_Success)
@@ -98,15 +101,33 @@ export class OrderDetailPage implements OnInit {
 
   async onCommit(): Promise<void> {
     if (this.orders.length < 1) {
-      this.r.alert(null, null, this.r.M_Save_DataEmpty)
+      this.r.alert(null, null, this.r.M_Save_DataEmpty);
     }
-    if (!this.commitChecked()) return
+    if (!this.commitChecked()) return;
 
     let curr = this
     this.r.alertConfirm(
       null,
       this.r.M_Commit_Confirm,
-      await async function() {
+      await async function () {
+        let mainOrderInfo = curr.getMainOrderInfo();
+
+        let apiResult = await curr.apiService.SaveOrderAsync(curr.r.OrdersKey, JSON.stringify(mainOrderInfo));
+        console.log('apiResult:', apiResult);
+        if (apiResult.ResCode != 1000) {
+          curr.r.alert(null, null, apiResult.Message);
+          return;
+        }
+
+        for (let entity of curr.orders) {
+          if (entity && !entity.IsMainOrder) {
+            let orderRequestInfo = new OrderRequestInfo();
+            orderRequestInfo.OrderCode = entity.Barcode;
+            orderRequestInfo.ParentOrderCode = mainOrderInfo.OrderCode;
+
+            apiResult = await curr.apiService.SaveOrderAsync(curr.r.OrdersKey, JSON.stringify(orderRequestInfo));
+          }
+        }
         await curr.clearData()
         curr.r.alert(null, null, curr.r.M_Save_Success)
       }
@@ -128,6 +149,20 @@ export class OrderDetailPage implements OnInit {
     }
 
     return true
+  }
+
+  getMainOrderInfo(): OrderRequestInfo {
+    for (let entity of this.orders) {
+      if (entity && entity.IsMainOrder) {
+        let orderRequestInfo = new OrderRequestInfo();
+        orderRequestInfo.OrderCode = entity.Barcode;
+        orderRequestInfo.ParentOrderCode = '';
+
+        return orderRequestInfo;
+      }
+    }
+
+    return null;
   }
 
   async clearData(): Promise<void> {

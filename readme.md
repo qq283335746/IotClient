@@ -1,3 +1,7 @@
+Source Local Dir:
+/home/tygasoft/Tyga/GitHub/IotServer
+/home/tygasoft/Tyga/GitHub/IotClient
+
 ubuntu environment:
 /etc/environment
 

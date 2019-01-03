@@ -27,20 +27,20 @@ export class LoginPage implements OnInit {
   ngOnInit() { }
 
   async onLogin() {
-    // const res = await this.apiService.LoginAsync(
-    //   this.userInfo.UserName,
-    //   this.userInfo.Password
-    // )
+    const res = await this.apiService.LoginAsync(
+      this.userInfo.UserName,
+      this.userInfo.Password
+    )
 
-    // console.log('login--', res);
+    console.log('login--', res);
 
-    // if (!res || res.ResCode != 1000) {
-    //   this.r.alert(null, null, this.r.M_Login_InvalidError);
-    //   return;
-    // }
+    if (!res || res.ResCode != 1000 || res.Token.trim() == '') {
+      this.r.alert(null, null, this.r.M_Login_InvalidError);
+      return;
+    }
 
-    // this.userInfo.Roles = res.Roles;
-    // this.userInfo.Token = res.Token;
+    this.userInfo.Roles = res.Roles;
+    this.userInfo.Token = res.Token;
 
     await this.apiService.setData(this.r.UserInfoKey, this.userInfo);
     this.router.navigateByUrl('/orderDetail')

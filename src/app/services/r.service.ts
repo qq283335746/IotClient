@@ -11,7 +11,8 @@ export class RService {
 
   RolesOptions: Array<string> = ['OrderPackage']
   AppId: string = "100000";
-  AppSecret: string = "";
+  AppSecret: string = "Tu9vwcJ9Co/nLtOAJ+B87g==";
+  DeviceId:string='';
   ApiRootUrl: string
   ApiRootUrlKey: string = 'ApiRootUrl'
   Api_Hello: string = '/Services/PdaService.svc/GetHelloWord'

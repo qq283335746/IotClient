@@ -5,6 +5,7 @@ import {RService} from 'src/app/services/r.service'
 import {ApiClientService} from './../../services/api-client.service'
 import { ApiResult } from 'src/app/models/ApiResult';
 import { MenuController, NavController } from '@ionic/angular';
+import { UserInfo } from 'src/app/models/UserInfo';
 
 @Component({
   selector: 'app-sys-entry-detail',
@@ -22,7 +23,9 @@ export class SysEntryDetailPage implements OnInit {
 
   sysInfo: SysInfo = {
     ApiRootUrl: this.r.ApiRootUrl,
-    IsLoginOut: this.apiService.userIsLogin,
+    IsLogin: false,
+    BtnLoginText:'登录',
+    WelcomeText:''
   }
 
   apiResult:ApiResult={
@@ -30,8 +33,19 @@ export class SysEntryDetailPage implements OnInit {
     Message:''
   }
 
-  ngOnInit() {
-    this.menuCtrl.enable(this.apiService.userIsLogin);
+  userInfo:UserInfo;
+
+  async ngOnInit() {
+    console.log('SysEntryDetailPage,ngOnInit--')
+    this.userInfo = await this.apiService.GetUserInfoAsync();
+    console.log('UserInfoKey--userInfo:',this.userInfo);
+    this.sysInfo.IsLogin = this.userInfo && this.userInfo.Token.trim() != '';
+    //this.menuCtrl.enable(!this.sysInfo.IsLoginOut);
+    //console.log('this.sysInfo.IsLoginOut:',this.sysInfo.IsLogin);
+    this.sysInfo.BtnLoginText = this.sysInfo.IsLogin ? '退出登录':'登录';
+    if(this.userInfo) {
+      this.sysInfo.WelcomeText = '欢迎：'+this.userInfo.UserName;
+    }
   }
 
   loadData() {}
@@ -68,18 +82,24 @@ export class SysEntryDetailPage implements OnInit {
 
     await this.apiService.setApiRootUrl(this.sysInfo.ApiRootUrl);
 
+    let curr = this;
     let currApi = this.apiService;
     let currRouter = this.navCtrl;
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      if(!currApi.userIsLogin) currRouter.navigateRoot('/login');
+      if(!curr.sysInfo.IsLogin) currRouter.navigateRoot('/login');
     })
   }
 
-  async onLoginOut() {
-    await this.apiService.loginOut()
-    let currRouter = this.navCtrl
-    this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      currRouter.navigateRoot('/login');
-    })
+  async onDoLogin() {
+    if(this.sysInfo.BtnLoginText == '退出登录'){
+      await this.apiService.loginOut()
+      let currRouter = this.navCtrl
+      this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
+        currRouter.navigateRoot('/login');
+      })
+    }
+    else{
+      this.navCtrl.navigateRoot('/login');
+    }
   }
 }

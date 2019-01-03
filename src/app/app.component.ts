@@ -55,9 +55,8 @@ export class AppComponent {
       const apiRootUrl = await this.apiService.getData(
         this.r.ApiRootUrlKey
       )
-      const userInfo: UserInfo = await this.apiService.getData(
-        this.r.UserInfoKey
-      )
+      let userInfo = await this.apiService.getData(this.r.UserInfoKey);
+      console.log('UserInfoKey--userInfo:',userInfo);
 
       if (!apiRootUrl || apiRootUrl === '') {
         await this.navCtrl.navigateRoot('/sysEntryDetail');

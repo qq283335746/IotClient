@@ -1,4 +1,6 @@
 export class SysInfo {
   public ApiRootUrl: string
-  public IsLoginOut: boolean
+  public IsLogin: boolean
+  public BtnLoginText:string
+  public WelcomeText:string
 }

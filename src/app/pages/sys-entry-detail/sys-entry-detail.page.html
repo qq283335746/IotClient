@@ -4,6 +4,9 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">{{sysInfo.WelcomeText}}</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -27,5 +30,5 @@
 
   <div padding-top></div>
   <ion-button expand="full" (click)="onSave()">保存</ion-button>
-  <ion-button expand="full" (click)="onLoginOut()" disabled="SysInfo.IsLoginOut">退出登录</ion-button>
+  <ion-button expand="full" (click)="onDoLogin()">{{sysInfo.BtnLoginText}}</ion-button>
 </ion-content>
