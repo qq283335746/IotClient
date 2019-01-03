@@ -24,6 +24,7 @@ const routes: Routes = [
     loadChildren:
       './pages/sys-entry-detail/sys-entry-detail.module#SysEntryDetailPageModule',
   },
+  { path: 'findOrder', loadChildren: './pages/find-order/find-order.module#FindOrderPageModule' },
 ]
 
 @NgModule({

@@ -29,6 +29,11 @@ export class AppComponent {
       icon: 'rose',
     },
     {
+      title: '订单查询',
+      url: '/findOrder',
+      icon: 'rose',
+    },
+    {
       title: '系统设置',
       url: '/sysEntryDetail',
       icon: 'build',

@@ -10,6 +10,7 @@ import { RequestBaseInfo } from '../models/RequestBaseInfo';
 import { ApiResult } from '../models/ApiResult';
 import { OrderRequestInfo } from '../models/OrderRequestInfo';
 import { ApiOrderResult } from '../models/ApiOrderResult';
+import { ApiFindOrderRouterResult } from '../models/ApiFindOrderRouterResult';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -55,6 +56,30 @@ export class ApiClientService {
     console.log('SaveOrderAsync--reqInfo:',reqInfo);
 
     return this.httpClient.post<ApiOrderResult>(apiUrl, reqInfo).toPromise();
+  }
+
+  async FindOrderRouterAsync(orderCode:string):Promise<ApiFindOrderRouterResult> {
+    const apiRootUrl = await this.getApiRootUrl();
+    const apiUrl = apiRootUrl + '/Order/FindOrderRouterAsync';
+
+    let requestBaseInfo = await this.GetRequestBaseInfo();
+    var reqInfo = {AppId:requestBaseInfo.AppId,AppSecret:requestBaseInfo.AppSecret,DeviceId:requestBaseInfo.DeviceId,Token:requestBaseInfo.Token,OrderCode:orderCode};
+
+    return this.httpClient.post<ApiFindOrderRouterResult>(apiUrl, reqInfo).toPromise();
+  }
+
+  async GetRequestBaseInfo():Promise<RequestBaseInfo>{
+
+    let userInfo = await this.getData(this.r.UserInfoKey);
+    let requestInfo = new RequestBaseInfo();
+    requestInfo.AppId = this.r.AppId;
+    requestInfo.AppSecret = this.r.AppSecret;
+    requestInfo.DeviceId = this.r.DeviceId;
+    requestInfo.Token = userInfo.Token;
+    
+    console.log('RequestBaseInfo:',requestInfo);
+
+    return requestInfo;
   }
 
   async UserIsLogin(): Promise<Boolean> {
