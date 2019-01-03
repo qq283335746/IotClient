@@ -31,7 +31,7 @@ export class AppComponent {
     {
       title: '订单查询',
       url: '/findOrder',
-      icon: 'rose',
+      icon: 'search',
     },
     {
       title: '系统设置',
