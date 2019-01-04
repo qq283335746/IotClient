@@ -45,41 +45,41 @@ export class ApiClientService {
     return this.httpClient.get(url).toPromise();
   }
 
-  async SaveOrderAsync(funFlag:string,jsonData:string) {
+  async SaveOrderAsync(funFlag: string, jsonData: string) {
     const apiRootUrl = await this.getApiRootUrl();
     const apiUrl = apiRootUrl + '/Order/SaveOrderAsync';
 
     let requestBaseInfo = await this.GetRequestBaseInfo();
 
-    var reqInfo = {AppId:requestBaseInfo.AppId,AppSecret:requestBaseInfo.AppSecret,DeviceId:requestBaseInfo.DeviceId,Token:requestBaseInfo.Token,FunFlag:funFlag,Data:jsonData};
+    var reqInfo = { AppId: requestBaseInfo.AppId, AppSecret: requestBaseInfo.AppSecret, DeviceId: requestBaseInfo.DeviceId, Token: requestBaseInfo.Token, FunFlag: funFlag, Data: jsonData };
 
-    console.log('SaveOrderAsync--reqInfo:',reqInfo);
+    console.log('SaveOrderAsync--reqInfo:', reqInfo);
 
     return this.httpClient.post<ApiOrderResult>(apiUrl, reqInfo).toPromise();
   }
 
-  async FindOrderRouterAsync(orderCode:string):Promise<ApiFindOrderRouterResult> {
+  async FindOrderRouterAsync(orderCode: string): Promise<ApiFindOrderRouterResult> {
     const apiRootUrl = await this.getApiRootUrl();
     const apiUrl = apiRootUrl + '/Order/FindOrderRouterAsync';
 
     let requestBaseInfo = await this.GetRequestBaseInfo();
-    var reqInfo = {AppId:requestBaseInfo.AppId,AppSecret:requestBaseInfo.AppSecret,DeviceId:requestBaseInfo.DeviceId,Token:requestBaseInfo.Token,OrderCode:orderCode};
+    var reqInfo = { AppId: requestBaseInfo.AppId, AppSecret: requestBaseInfo.AppSecret, DeviceId: requestBaseInfo.DeviceId, Token: requestBaseInfo.Token, OrderCode: orderCode };
 
     return this.httpClient.post<ApiFindOrderRouterResult>(apiUrl, reqInfo).toPromise();
   }
 
-  async GetRequestBaseInfo():Promise<RequestBaseInfo>{
+  async GetRequestBaseInfo(): Promise<RequestBaseInfo> {
 
     let requestInfo = new RequestBaseInfo();
     let userInfo = await this.getData(this.r.UserInfoKey);
-    if(!userInfo) return requestInfo;
+    if (!userInfo) return requestInfo;
     console.log(9999999999);
     requestInfo.AppId = this.r.AppId;
     requestInfo.AppSecret = this.r.AppSecret;
     requestInfo.DeviceId = this.r.DeviceId;
     requestInfo.Token = userInfo.Token;
-    
-    console.log('RequestBaseInfo:',requestInfo);
+
+    console.log('RequestBaseInfo:', requestInfo);
 
     return requestInfo;
   }
@@ -89,7 +89,7 @@ export class ApiClientService {
     return userInfo && userInfo.Token.trim() != '';
   }
 
-  async GetUserInfoAsync():Promise<UserInfo>{
+  async GetUserInfoAsync(): Promise<UserInfo> {
     return await this.getData(this.r.UserInfoKey);
   }
 
@@ -127,6 +127,17 @@ export class ApiClientService {
   async apiTest(apiRootUrl: string) {
     const apiUrl = apiRootUrl + "/Order/GetHelloAsync";
     return this.httpClient.get<ApiTestResult>(apiUrl).toPromise();
+  }
+
+  toOrderStatusName(orderStatus: number): string {
+    switch (orderStatus) {
+      case 1:
+        return '发货中';
+      case 2:
+        return '已打包';
+      default:
+        return '未知'
+    }
   }
 
   async httpGet(url: string) {

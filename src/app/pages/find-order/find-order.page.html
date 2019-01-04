@@ -9,7 +9,7 @@
 
 <ion-content padding>
     <ion-searchbar
-    searchIcon="barcode"
+    searchIcon="search"
     placeholder="请输入要查询的条码"
     (click)="onSearch()"
     [(ngModel)]="barcode">
@@ -22,20 +22,55 @@
       <ion-card-content>
           <ion-list *ngFor="let item of orders">
               <ion-item>
-                <ion-label>{{item.OrderCode}}</ion-label>
+                <ion-label>订单：{{item.OrderCode}}</ion-label>
               </ion-item>
               <ion-card>
+                <ion-item>
+                    <ion-label>附加信息：</ion-label>
+                </ion-item>
+                <ion-card-content>
+                    <ion-grid>
+                        <ion-row *ngFor="let addItem of item.AddItems">
+                            <ion-col>
+                                {{addItem.OrderCode}}
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-card-content>
+              </ion-card>
+              <ion-card>
                   <ion-item>
-                      <ion-label>附加信息：</ion-label>
+                    <ion-label>订单流转信息：</ion-label>
                   </ion-item>
                   <ion-card-content>
-                      <ion-list *ngFor="let addItem of item.AddItems">
-                          <ion-item>
-                              <ion-label>{{addItem.OrderCode}}</ion-label>
-                          </ion-item>
-                      </ion-list>
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col>流转状态</ion-col>
+                                <ion-col>操作人</ion-col>
+                                <ion-col>操作时间</ion-col>
+                            </ion-row>
+                            <ion-row *ngFor="let transfer of item.TransferItems">
+                                <ion-col>
+                                    {{toOrderStatusName(transfer.OrderStatus)}}
+                                </ion-col>
+                                <ion-col>
+                                    {{transfer.ByUserName}}
+                                </ion-col>
+                                <ion-col>
+                                    {{transfer.LastUpdatedTime}}
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
                   </ion-card-content>
               </ion-card>
+              <ion-card>
+                    <ion-item>
+                        <ion-label>备注：</ion-label>
+                    </ion-item>
+                    <ion-card-content>
+                        {{item.Remark}}
+                    </ion-card-content>
+                </ion-card>
               
             </ion-list>
       </ion-card-content>

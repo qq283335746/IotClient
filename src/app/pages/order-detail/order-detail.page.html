@@ -26,5 +26,9 @@
 
 </ion-content>
 <ion-footer>
+  <ion-item>
+    <ion-label>备注：</ion-label>
+    <ion-input type="text" [(ngModel)]="remark"></ion-input>
+  </ion-item>
   <ion-button expand="full" (click)="onCommit()">提交</ion-button>
 </ion-footer>

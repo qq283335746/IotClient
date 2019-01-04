@@ -19,6 +19,10 @@ export class FindOrderPage implements OnInit {
   ngOnInit() {
   }
 
+  toOrderStatusName(orderStatus: number): string {
+    return this.apiService.toOrderStatusName(orderStatus);
+  }
+
   async onSearch() {
     console.log('onSearch--');
     if (this.barcode.trim() === '') return;

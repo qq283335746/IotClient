@@ -37,6 +37,7 @@ export class OrderDetailPage implements OnInit {
   barcode: string
   orders: Array<OrderInfo>
   isMainOrder: boolean
+  remark: string
 
   async ngOnInit() {
     console.log('ngOnInit--');
@@ -158,6 +159,7 @@ export class OrderDetailPage implements OnInit {
         let orderRequestInfo = new OrderRequestInfo();
         orderRequestInfo.OrderCode = entity.Barcode;
         orderRequestInfo.ParentOrderCode = '';
+        orderRequestInfo.Remark = this.remark;
 
         return orderRequestInfo;
       }
@@ -167,7 +169,8 @@ export class OrderDetailPage implements OnInit {
   }
 
   async clearData(): Promise<void> {
-    await this.apiService.removeData(this.r.OrdersKey)
-    this.orders = []
+    await this.apiService.removeData(this.r.OrdersKey);
+    this.orders = [];
+    this.remark = '';
   }
 }
