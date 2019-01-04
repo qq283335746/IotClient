@@ -29,6 +29,7 @@ export class RService {
   M_Commit_Confirm: string = '确定要提交吗？'
   M_Order_ExistOne: string = '必须设置一个且仅一个订单号作为主订单'
   M_Login_InvalidError: string = '帐号或密码不正确！'
+  M_NotLogin: string = '请先登录！'
 
   async alert(title: string, subTitle: string, message: string) {
     if (!title || title.trim() === '') title = '提示'

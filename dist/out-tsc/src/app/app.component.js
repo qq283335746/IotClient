@@ -76,6 +76,11 @@ var AppComponent = /** @class */ (function () {
                 icon: 'rose',
             },
             {
+                title: '订单查询',
+                url: '/findOrder',
+                icon: 'search',
+            },
+            {
                 title: '系统设置',
                 url: '/sysEntryDetail',
                 icon: 'build',

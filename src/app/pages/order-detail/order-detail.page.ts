@@ -100,6 +100,7 @@ export class OrderDetailPage implements OnInit {
   }
 
   async onCommit(): Promise<void> {
+    console.log('OrderDetailPage,onCommit--')
     if (this.orders.length < 1) {
       this.r.alert(null, null, this.r.M_Save_DataEmpty);
     }

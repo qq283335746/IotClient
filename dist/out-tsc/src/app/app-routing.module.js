@@ -26,6 +26,7 @@ var routes = [
         path: 'sysEntryDetail',
         loadChildren: './pages/sys-entry-detail/sys-entry-detail.module#SysEntryDetailPageModule',
     },
+    { path: 'findOrder', loadChildren: './pages/find-order/find-order.module#FindOrderPageModule' },
 ];
 var AppRoutingModule = /** @class */ (function () {
     function AppRoutingModule() {

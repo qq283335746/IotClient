@@ -49,9 +49,9 @@ export class ApiClientService {
     const apiRootUrl = await this.getApiRootUrl();
     const apiUrl = apiRootUrl + '/Order/SaveOrderAsync';
 
-    let userInfo = await this.getData(this.r.UserInfoKey);
+    let requestBaseInfo = await this.GetRequestBaseInfo();
 
-    var reqInfo = {AppId:this.r.AppId,AppSecret:this.r.AppSecret,DeviceId:this.r.DeviceId,Token:userInfo.Token,FunFlag:funFlag,Data:jsonData};
+    var reqInfo = {AppId:requestBaseInfo.AppId,AppSecret:requestBaseInfo.AppSecret,DeviceId:requestBaseInfo.DeviceId,Token:requestBaseInfo.Token,FunFlag:funFlag,Data:jsonData};
 
     console.log('SaveOrderAsync--reqInfo:',reqInfo);
 
@@ -70,8 +70,10 @@ export class ApiClientService {
 
   async GetRequestBaseInfo():Promise<RequestBaseInfo>{
 
-    let userInfo = await this.getData(this.r.UserInfoKey);
     let requestInfo = new RequestBaseInfo();
+    let userInfo = await this.getData(this.r.UserInfoKey);
+    if(!userInfo) return requestInfo;
+    console.log(9999999999);
     requestInfo.AppId = this.r.AppId;
     requestInfo.AppSecret = this.r.AppSecret;
     requestInfo.DeviceId = this.r.DeviceId;

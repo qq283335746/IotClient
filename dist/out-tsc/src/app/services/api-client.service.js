@@ -46,6 +46,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RService } from './r.service';
+import { RequestBaseInfo } from '../models/RequestBaseInfo';
 var httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
@@ -81,18 +82,60 @@ var ApiClientService = /** @class */ (function () {
     };
     ApiClientService.prototype.SaveOrderAsync = function (funFlag, jsonData) {
         return __awaiter(this, void 0, void 0, function () {
-            var apiRootUrl, apiUrl, userInfo;
+            var apiRootUrl, apiUrl, requestBaseInfo, reqInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.getApiRootUrl()];
                     case 1:
                         apiRootUrl = _a.sent();
                         apiUrl = apiRootUrl + '/Order/SaveOrderAsync';
-                        return [4 /*yield*/, this.getData(this.r.UserInfoKey)];
+                        return [4 /*yield*/, this.GetRequestBaseInfo()];
                     case 2:
+                        requestBaseInfo = _a.sent();
+                        reqInfo = { AppId: requestBaseInfo.AppId, AppSecret: requestBaseInfo.AppSecret, DeviceId: requestBaseInfo.DeviceId, Token: requestBaseInfo.Token, FunFlag: funFlag, Data: jsonData };
+                        console.log('SaveOrderAsync--reqInfo:', reqInfo);
+                        return [2 /*return*/, this.httpClient.post(apiUrl, reqInfo).toPromise()];
+                }
+            });
+        });
+    };
+    ApiClientService.prototype.FindOrderRouterAsync = function (orderCode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var apiRootUrl, apiUrl, requestBaseInfo, reqInfo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getApiRootUrl()];
+                    case 1:
+                        apiRootUrl = _a.sent();
+                        apiUrl = apiRootUrl + '/Order/FindOrderRouterAsync';
+                        return [4 /*yield*/, this.GetRequestBaseInfo()];
+                    case 2:
+                        requestBaseInfo = _a.sent();
+                        reqInfo = { AppId: requestBaseInfo.AppId, AppSecret: requestBaseInfo.AppSecret, DeviceId: requestBaseInfo.DeviceId, Token: requestBaseInfo.Token, OrderCode: orderCode };
+                        return [2 /*return*/, this.httpClient.post(apiUrl, reqInfo).toPromise()];
+                }
+            });
+        });
+    };
+    ApiClientService.prototype.GetRequestBaseInfo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var requestInfo, userInfo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        requestInfo = new RequestBaseInfo();
+                        return [4 /*yield*/, this.getData(this.r.UserInfoKey)];
+                    case 1:
                         userInfo = _a.sent();
-                        console.log({ AppId: this.r.AppId, AppSecret: this.r.AppSecret, DeviceId: this.r.DeviceId, Token: userInfo.Token, FunFlag: funFlag, Data: jsonData });
-                        return [2 /*return*/, this.httpClient.post(apiUrl, { AppId: this.r.AppId, AppSecret: this.r.AppSecret, DeviceId: this.r.DeviceId, Token: userInfo.Token, FunFlag: funFlag, Data: jsonData }).toPromise()];
+                        if (!userInfo)
+                            return [2 /*return*/, requestInfo];
+                        console.log(9999999999);
+                        requestInfo.AppId = this.r.AppId;
+                        requestInfo.AppSecret = this.r.AppSecret;
+                        requestInfo.DeviceId = this.r.DeviceId;
+                        requestInfo.Token = userInfo.Token;
+                        console.log('RequestBaseInfo:', requestInfo);
+                        return [2 /*return*/, requestInfo];
                 }
             });
         });

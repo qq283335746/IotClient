@@ -166,6 +166,7 @@ var OrderDetailPage = /** @class */ (function () {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
+                        console.log('OrderDetailPage,onCommit--');
                         if (this.orders.length < 1) {
                             this.r.alert(null, null, this.r.M_Save_DataEmpty);
                         }

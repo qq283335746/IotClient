@@ -66,6 +66,7 @@ var RService = /** @class */ (function () {
         this.M_Commit_Confirm = '确定要提交吗？';
         this.M_Order_ExistOne = '必须设置一个且仅一个订单号作为主订单';
         this.M_Login_InvalidError = '帐号或密码不正确！';
+        this.M_NotLogin = '请先登录！';
         console.log('RService.constructor--');
     }
     RService.prototype.alert = function (title, subTitle, message) {
