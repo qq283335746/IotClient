@@ -19,6 +19,7 @@ export class RService {
   Api_Login: string = this.ApiRootUrl + '/Login'
   OrdersKey: string = 'Orders'
   OrderPackagesKey: string = 'OrderPackages'
+  OrderBackKey: string = 'OrderBack'
   UserInfoKey: string = 'UserInfo'
   GuidEmpty: string = '00000000-0000-0000-0000-000000000000'
   M_Save_Success: string = '恭喜您，操作成功！'
@@ -30,6 +31,7 @@ export class RService {
   M_Order_ExistOne: string = '必须设置一个且仅一个订单号作为主订单'
   M_Login_InvalidError: string = '帐号或密码不正确！'
   M_NotLogin: string = '请先登录！'
+  M_DataEmpty:string='暂无数据！'
 
   async alert(title: string, subTitle: string, message: string) {
     if (!title || title.trim() === '') title = '提示'

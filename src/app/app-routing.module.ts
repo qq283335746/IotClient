@@ -26,6 +26,7 @@ const routes: Routes = [
   },
   { path: 'findOrder', loadChildren: './pages/find-order/find-order.module#FindOrderPageModule' },
   { path: 'resultRedirect', loadChildren: './pages/result-redirect/result-redirect.module#ResultRedirectPageModule' },
+  { path: 'orderBack', loadChildren: './pages/order-back/order-back.module#OrderBackPageModule' },
 ]
 
 @NgModule({

@@ -62,7 +62,7 @@ export class OrderDetailPage implements OnInit {
       this.barcode.trim() === '' ||
       this.isExistBarcode(this.barcode)
     ) {
-      this.barcode = ''
+      this.resetScan();
       return
     }
 
@@ -70,11 +70,6 @@ export class OrderDetailPage implements OnInit {
       this.orderInfoSelected.Id = this.r.GuidEmpty;
       this.orderInfoSelected.Barcode = this.barcode;
       this.isMainOrder = true;
-      // this.orderInfoSelected = {
-      //   Id: this.r.GuidEmpty,
-      //   Barcode: this.barcode,
-      //   IsMainOrder: true,
-      // }
     }
 
     let orderInfo = new OrderInfo();
@@ -83,16 +78,10 @@ export class OrderDetailPage implements OnInit {
     orderInfo.IsMainOrder = this.orders.length == 0;
     orderInfo.BatchRandomCode = this.batchRandomCode;
 
-    // this.orderInfo = {
-    //   Id: this.r.GuidEmpty,
-    //   Barcode: this.barcode,
-    //   IsMainOrder: this.orders.length == 0,
-    // }
-
     this.orders.push(orderInfo)
     await this.apiService.setData(this.r.OrdersKey, this.orders)
 
-    this.barcode = ''
+    this.resetScan();
   }
 
   onDelete(): void {
@@ -187,10 +176,15 @@ export class OrderDetailPage implements OnInit {
     return null;
   }
 
+  resetScan(){
+    setTimeout(() => {
+      this.barcode = '';
+    }, 100);
+  }
+
   async clearData() {
     await this.apiService.removeData(this.r.OrdersKey);
     this.orders = [];
     this.remark = '';
-    
   }
 }

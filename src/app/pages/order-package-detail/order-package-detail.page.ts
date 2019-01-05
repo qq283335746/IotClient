@@ -62,7 +62,7 @@ export class OrderPackageDetailPage implements OnInit {
       this.barcode.trim() === '' ||
       this.isExistBarcode(this.barcode)
     ) {
-      this.barcode = ''
+      this.resetScan();
       return
     }
 
@@ -78,7 +78,7 @@ export class OrderPackageDetailPage implements OnInit {
       this.orderPackageInfo
     )
 
-    this.barcode = ''
+    this.resetScan();
   }
 
   onDelete() {
@@ -132,6 +132,12 @@ export class OrderPackageDetailPage implements OnInit {
     }
 
     return true;
+  }
+
+  resetScan(){
+    setTimeout(() => {
+      this.barcode = '';
+    }, 100);
   }
 
   async clearData(): Promise<void> {

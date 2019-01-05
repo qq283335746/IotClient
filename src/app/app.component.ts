@@ -19,7 +19,7 @@ export class AppComponent {
     //   icon: 'home',
     // },
     {
-      title: '订单扫描',
+      title: '订单配送',
       url: '/orderDetail',
       icon: 'qr-scanner',
     },
@@ -27,6 +27,11 @@ export class AppComponent {
       title: '订单包装',
       url: '/orderPackageDetail',
       icon: 'rose',
+    },
+    {
+      title: '订单退回',
+      url: '/orderBack',
+      icon: 'qr-scanner',
     },
     {
       title: '订单查询',

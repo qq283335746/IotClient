@@ -13,8 +13,9 @@ export class FindOrderPage implements OnInit {
 
   }
 
-  barcode: string = "";
-  orders: any
+  keyword: string = "";
+  orders: any;
+  dataEmptyText:string;
 
   ngOnInit() {
   }
@@ -25,14 +26,25 @@ export class FindOrderPage implements OnInit {
 
   async onSearch() {
     console.log('onSearch--');
-    if (this.barcode.trim() === '') return;
-    const apiResult = await this.apiService.FindOrderRouterAsync(this.barcode);
+    if (this.keyword.trim() === '') return;
+    const apiResult = await this.apiService.FindOrderRouterAsync(this.keyword);
     console.log('onSearch--', apiResult);
     if (apiResult.ResCode != 1000) {
       this.r.alert(null, null, apiResult.Message);
       return;
     }
+    if(!apiResult.Orders || apiResult.Orders.length === 0){
+      this.dataEmptyText = this.r.M_DataEmpty;
+    }
+    else{
+      this.dataEmptyText = '';
+    }
     this.orders = apiResult.Orders;
+  }
+
+  async onSearchByItem(item:string){
+    this.keyword = item;
+    await this.onSearch();
   }
 
 }
