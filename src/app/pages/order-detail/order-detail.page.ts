@@ -21,23 +21,14 @@ export class OrderDetailPage implements OnInit {
   }
 
   userInfo = new UserInfo();
+  orderInfo = new OrderInfo();
+  orderInfoSelected = new OrderInfo();
 
-  orderInfo: OrderInfo = {
-    Id: '',
-    Barcode: '',
-    IsMainOrder: false,
-  }
-
-  orderInfoSelected: OrderInfo = {
-    Id: '',
-    Barcode: '',
-    IsMainOrder: false,
-  }
-
-  barcode: string
-  orders: Array<OrderInfo>
-  isMainOrder: boolean
-  remark: string
+  barcode: string;
+  orders: Array<OrderInfo>;
+  isMainOrder: boolean;
+  remark: string;
+  batchRandomCode: string = this.r.getRndOrderCode();
 
   async ngOnInit() {
     console.log('ngOnInit--');
@@ -48,7 +39,11 @@ export class OrderDetailPage implements OnInit {
   async loadData(): Promise<void> {
     //this.userInfo
     this.orders = await this.apiService.getData(this.r.OrdersKey)
-    if (!this.orders) this.orders = []
+    if (!this.orders || this.orders.length == 0) this.orders = []
+    else {
+      this.batchRandomCode = this.orders[0].BatchRandomCode;
+    }
+    console.log('batchRandomCode:', this.batchRandomCode);
   }
 
   isExistBarcode(barcode: string): boolean {
@@ -72,20 +67,29 @@ export class OrderDetailPage implements OnInit {
     }
 
     if (this.orders.length == 0) {
-      this.orderInfoSelected = {
-        Id: this.r.GuidEmpty,
-        Barcode: this.barcode,
-        IsMainOrder: true,
-      }
+      this.orderInfoSelected.Id = this.r.GuidEmpty;
+      this.orderInfoSelected.Barcode = this.barcode;
+      this.isMainOrder = true;
+      // this.orderInfoSelected = {
+      //   Id: this.r.GuidEmpty,
+      //   Barcode: this.barcode,
+      //   IsMainOrder: true,
+      // }
     }
 
-    this.orderInfo = {
-      Id: this.r.GuidEmpty,
-      Barcode: this.barcode,
-      IsMainOrder: this.orders.length == 0,
-    }
+    let orderInfo = new OrderInfo();
+    orderInfo.Id = this.r.GuidEmpty;
+    orderInfo.Barcode = this.barcode;
+    orderInfo.IsMainOrder = this.orders.length == 0;
+    orderInfo.BatchRandomCode = this.batchRandomCode;
 
-    this.orders.push(this.orderInfo)
+    // this.orderInfo = {
+    //   Id: this.r.GuidEmpty,
+    //   Barcode: this.barcode,
+    //   IsMainOrder: this.orders.length == 0,
+    // }
+
+    this.orders.push(orderInfo)
     await this.apiService.setData(this.r.OrdersKey, this.orders)
 
     this.barcode = ''
@@ -100,7 +104,7 @@ export class OrderDetailPage implements OnInit {
     })
   }
 
-  async onCommit(): Promise<void> {
+  async onCommit() {
     console.log('OrderDetailPage,onCommit--')
     if (this.orders.length < 1) {
       this.r.alert(null, null, this.r.M_Save_DataEmpty);
@@ -112,28 +116,42 @@ export class OrderDetailPage implements OnInit {
       null,
       this.r.M_Commit_Confirm,
       await async function () {
-        let mainOrderInfo = curr.getMainOrderInfo();
 
-        let apiResult = await curr.apiService.SaveOrderAsync(curr.r.OrdersKey, JSON.stringify(mainOrderInfo));
-        console.log('apiResult:', apiResult);
-        if (apiResult.ResCode != 1000) {
-          curr.r.alert(null, null, apiResult.Message);
-          return;
-        }
+        const isOk = await curr.saveToServer();
+        if (!isOk) return;
 
-        for (let entity of curr.orders) {
-          if (entity && !entity.IsMainOrder) {
-            let orderRequestInfo = new OrderRequestInfo();
-            orderRequestInfo.OrderCode = entity.Barcode;
-            orderRequestInfo.ParentOrderCode = mainOrderInfo.OrderCode;
-
-            apiResult = await curr.apiService.SaveOrderAsync(curr.r.OrdersKey, JSON.stringify(orderRequestInfo));
-          }
-        }
-        await curr.clearData()
-        curr.r.alert(null, null, curr.r.M_Save_Success)
+        await curr.clearData();
+        //curr.r.alert(null, null, curr.r.M_Save_Success)
+        curr.router.navigate(['/resultRedirect']);
       }
     )
+  }
+
+  async saveToServer(): Promise<Boolean> {
+    let mainOrderInfo = this.getMainOrderInfo();
+    let apiResult = await this.apiService.SaveOrderAsync(this.r.OrdersKey, JSON.stringify(mainOrderInfo));
+    console.log('apiResult:', apiResult);
+    if (apiResult.ResCode != 1000) {
+      this.r.alert(null, null, apiResult.Message);
+      return false;
+    }
+
+    for (let entity of this.orders) {
+      if (entity && !entity.IsMainOrder) {
+        let orderRequestInfo = new OrderRequestInfo();
+        orderRequestInfo.OrderCode = entity.Barcode;
+        orderRequestInfo.ParentOrderCode = mainOrderInfo.OrderCode;
+        orderRequestInfo.BatchRandomCode = this.batchRandomCode;
+
+        apiResult = await this.apiService.SaveOrderAsync(this.r.OrdersKey, JSON.stringify(orderRequestInfo));
+        if (apiResult.ResCode != 1000) {
+          this.r.alert(null, null, apiResult.Message);
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   commitChecked(): boolean {
@@ -160,6 +178,7 @@ export class OrderDetailPage implements OnInit {
         orderRequestInfo.OrderCode = entity.Barcode;
         orderRequestInfo.ParentOrderCode = '';
         orderRequestInfo.Remark = this.remark;
+        orderRequestInfo.BatchRandomCode = this.batchRandomCode;
 
         return orderRequestInfo;
       }
@@ -168,9 +187,10 @@ export class OrderDetailPage implements OnInit {
     return null;
   }
 
-  async clearData(): Promise<void> {
+  async clearData() {
     await this.apiService.removeData(this.r.OrdersKey);
     this.orders = [];
     this.remark = '';
+    
   }
 }

@@ -7,6 +7,7 @@ export class OrderInfo {
   public Id: string
   public Barcode: string
   public IsMainOrder: boolean
+  public BatchRandomCode:string
 
   //   public get _Id() {
   //     return this._id

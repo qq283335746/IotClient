@@ -21,20 +21,25 @@ export class OrderPackageDetailPage implements OnInit {
   orderPackageInfo: OrderPackageInfo = {
     ParentOrder: this.r.getRndOrderCode(),
     Orders: [],
+    BatchRandomCode: this.r.getRndOrderCode()
   }
   orderInfo: OrderInfo
   //orderPackages: Array<OrderPackageInfo>
-  barcode: string
+  barcode: string;
+  batchRandomCode: string = this.r.getRndOrderCode();
 
   ngOnInit() {
     this.loadData()
   }
 
-  async loadData(): Promise<void> {
+  async loadData() {
     const oldOrderPackageInfo = await this.apiService.getData(
       this.r.OrderPackagesKey
     )
-    if (oldOrderPackageInfo) this.orderPackageInfo = oldOrderPackageInfo
+    if (oldOrderPackageInfo) {
+      this.orderPackageInfo = oldOrderPackageInfo;
+      this.batchRandomCode = oldOrderPackageInfo.BatchRandomCode;
+    }
   }
 
   isExistBarcode(barcode: string): boolean {
@@ -51,7 +56,7 @@ export class OrderPackageDetailPage implements OnInit {
     return false
   }
 
-  async onBarcodeChanged(): Promise<void> {
+  async onBarcodeChanged() {
     if (
       !this.barcode ||
       this.barcode.trim() === '' ||
@@ -65,6 +70,7 @@ export class OrderPackageDetailPage implements OnInit {
       Id: this.r.GuidEmpty,
       Barcode: this.barcode,
       IsMainOrder: false,
+      BatchRandomCode: this.orderPackageInfo.ParentOrder
     }
     this.orderPackageInfo.Orders.push(this.orderInfo)
     await this.apiService.setData(
@@ -75,7 +81,7 @@ export class OrderPackageDetailPage implements OnInit {
     this.barcode = ''
   }
 
-  onDelete(): void {
+  onDelete() {
     let curr = this
     this.r.alertConfirm(null, this.r.M_Delete_Confirm, async function () {
       await curr.apiService.removeData(curr.r.OrderPackagesKey)
@@ -85,25 +91,30 @@ export class OrderPackageDetailPage implements OnInit {
     })
   }
 
-  async onCommit(): Promise<void> {
-    let curr = this
+  async onCommit() {
+    let curr = this;
     this.r.alertConfirm(
       null,
       this.r.M_Commit_Confirm,
       await async function () {
 
         const isOk = await curr.saveToServer();
-        if(!isOk) return;
+        if (!isOk) return;
+
         await curr.clearData()
-        curr.r.alert(null, null, curr.r.M_Save_Success)
+        //curr.r.alert(null, null, curr.r.M_Save_Success);
+        curr.router.navigate(['/resultRedirect']);
       }
     )
   }
 
-  async saveToServer():Promise<Boolean> {
+  async saveToServer(): Promise<Boolean> {
+
     let mainOrderInfo = new OrderRequestInfo();
     mainOrderInfo.OrderCode = this.orderPackageInfo.ParentOrder;
     mainOrderInfo.ParentOrderCode = '';
+    mainOrderInfo.BatchRandomCode = this.batchRandomCode;
+
     let apiResult = await this.apiService.SaveOrderAsync(this.r.OrderPackagesKey, JSON.stringify(mainOrderInfo));
     console.log('apiResult:', apiResult);
     if (apiResult.ResCode != 1000) {
@@ -115,6 +126,7 @@ export class OrderPackageDetailPage implements OnInit {
       let orderRequestInfo = new OrderRequestInfo();
       orderRequestInfo.OrderCode = entity.Barcode;
       orderRequestInfo.ParentOrderCode = this.orderPackageInfo.ParentOrder;
+      orderRequestInfo.BatchRandomCode = this.batchRandomCode;
 
       apiResult = await this.apiService.SaveOrderAsync(this.r.OrderPackagesKey, JSON.stringify(orderRequestInfo));
     }
@@ -123,10 +135,11 @@ export class OrderPackageDetailPage implements OnInit {
   }
 
   async clearData(): Promise<void> {
-    await this.apiService.removeData(this.r.OrderPackagesKey)
+    await this.apiService.removeData(this.r.OrderPackagesKey);
     this.orderPackageInfo = {
       ParentOrder: this.r.getRndOrderCode(),
       Orders: [],
+      BatchRandomCode:this.r.getRndOrderCode()
     }
   }
 }
