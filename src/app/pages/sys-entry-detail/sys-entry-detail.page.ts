@@ -21,8 +21,9 @@ export class SysEntryDetailPage implements OnInit {
     private apiService: ApiClientService
   ) {}
 
+  apiRootUrl:string;
+
   sysInfo: SysInfo = {
-    ApiRootUrl: this.r.ApiRootUrl,
     IsLogin: false,
     BtnLoginText:'登录',
     WelcomeText:''
@@ -46,18 +47,21 @@ export class SysEntryDetailPage implements OnInit {
     if(this.userInfo) {
       this.sysInfo.WelcomeText = '欢迎：'+this.userInfo.UserName;
     }
+    await this.loadData();
   }
 
-  loadData() {}
+  async loadData() {
+     this.apiRootUrl = await this.apiService.getApiRootUrl();
+  }
 
   async onApiTest() {
     console.log('onApiTest--')
-    if(!this.sysInfo.ApiRootUrl || this.sysInfo.ApiRootUrl.trim() === ''){
+    if(!this.apiRootUrl || this.apiRootUrl.trim() === ''){
       this.r.alert(null,null,this.r.M_ApiRootUrlInvalidError)
       return;
     }
     try{
-      const res = await this.apiService.apiTest(this.sysInfo.ApiRootUrl);
+      const res = await this.apiService.apiTest(this.apiRootUrl);
       console.log('apiTest result:', res);
       if(!res){
         this.r.alert(null,null,this.r.M_ApiRootUrlInvalidError);
@@ -73,14 +77,14 @@ export class SysEntryDetailPage implements OnInit {
 
   async onSave() {
     if (
-      !this.sysInfo.ApiRootUrl ||
-      this.sysInfo.ApiRootUrl.trim() === ''
+      !this.apiRootUrl ||
+      this.apiRootUrl.trim() === ''
     ) {
       this.r.alert(null, null, this.r.M_Form_Field_Empty)
       return false
     }
 
-    await this.apiService.setApiRootUrl(this.sysInfo.ApiRootUrl);
+    await this.apiService.setApiRootUrl(this.apiRootUrl);
 
     let curr = this;
     let currApi = this.apiService;
