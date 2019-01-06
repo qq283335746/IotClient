@@ -8,7 +8,6 @@ import { LoginResult } from '../models/LoginResult';
 import { LoginRequestInfo } from '../models/LoginRequestInfo';
 import { RequestBaseInfo } from '../models/RequestBaseInfo';
 import { ApiResult } from '../models/ApiResult';
-import { OrderRequestInfo } from '../models/OrderRequestInfo';
 import { ApiOrderResult } from '../models/ApiOrderResult';
 import { ApiFindOrderRouterResult } from '../models/ApiFindOrderRouterResult';
 
@@ -73,7 +72,7 @@ export class ApiClientService {
     let requestInfo = new RequestBaseInfo();
     let userInfo = await this.getData(this.r.UserInfoKey);
     if (!userInfo) return requestInfo;
-    console.log(9999999999);
+
     requestInfo.AppId = this.r.AppId;
     requestInfo.AppSecret = this.r.AppSecret;
     requestInfo.DeviceId = this.r.DeviceId;
