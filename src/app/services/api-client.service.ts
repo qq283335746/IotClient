@@ -111,13 +111,8 @@ export class ApiClientService {
   }
 
   async getApiRootUrl(): Promise<string> {
-    if (this.r.ApiRootUrl && this.r.ApiRootUrl.trim() !== '') {
-      return this.r.ApiRootUrl
-    }
-    const data = await this.getData(this.r.ApiRootUrlKey)
-    if (data) this.r.ApiRootUrl = data
-
-    return this.r.ApiRootUrl
+    this.r.ApiRootUrl = await this.getData(this.r.ApiRootUrlKey);
+    return this.r.ApiRootUrl;
   }
   async setApiRootUrl(value: string) {
     await this.setData(this.r.ApiRootUrlKey, value)

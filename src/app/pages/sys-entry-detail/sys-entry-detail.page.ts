@@ -1,10 +1,10 @@
-//import {Router} from '@angular/router'
+import {Router} from '@angular/router'
 import {Component, OnInit} from '@angular/core'
 import {SysInfo} from 'src/app/models/SysInfo'
 import {RService} from 'src/app/services/r.service'
 import {ApiClientService} from './../../services/api-client.service'
 import { ApiResult } from 'src/app/models/ApiResult';
-import { MenuController, NavController } from '@ionic/angular';
+import { MenuController } from '@ionic/angular';
 import { UserInfo } from 'src/app/models/UserInfo';
 
 @Component({
@@ -15,8 +15,7 @@ import { UserInfo } from 'src/app/models/UserInfo';
 export class SysEntryDetailPage implements OnInit {
   constructor(
     private menuCtrl:MenuController,
-    private navCtrl:NavController,
-    //private router: Router,
+    private router: Router,
     private r: RService,
     private apiService: ApiClientService
   ) {}
@@ -88,22 +87,22 @@ export class SysEntryDetailPage implements OnInit {
 
     let curr = this;
     let currApi = this.apiService;
-    let currRouter = this.navCtrl;
+    let currRouter = this.router;
     this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-      if(!curr.sysInfo.IsLogin) currRouter.navigateRoot('/login');
+      if(!curr.sysInfo.IsLogin) currRouter.navigateByUrl('/login');
     })
   }
 
   async onDoLogin() {
     if(this.sysInfo.BtnLoginText == '退出登录'){
       await this.apiService.loginOut()
-      let currRouter = this.navCtrl
+      let currRouter = this.router
       this.r.alertAndCallback(null, null, this.r.M_Save_Success, function() {
-        currRouter.navigateRoot('/login');
+        currRouter.navigateByUrl('/login');
       })
     }
     else{
-      this.navCtrl.navigateRoot('/login');
+      this.router.navigateByUrl('/login');
     }
   }
 }

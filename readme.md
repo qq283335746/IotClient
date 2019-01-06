@@ -77,6 +77,9 @@ https://www.joshmorony.com/deploying-capacitor-applications-to-android-developme
 
 https://www.joshmorony.com/deploying-capacitor-applications-to-ios-development-distribution/ --ios
 
+Publishing a Progressive Web App:
+https://beta.ionicframework.com/docs/publishing/progressive-web-app
+
 storage:
 https://beta.ionicframework.com/docs/building/storage/
 

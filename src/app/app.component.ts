@@ -1,9 +1,8 @@
-import {UserInfo} from './models/UserInfo'
 import {Component} from '@angular/core'
-import {Platform, NavController} from '@ionic/angular'
+import {Platform} from '@ionic/angular'
 import {SplashScreen} from '@ionic-native/splash-screen/ngx'
 import {StatusBar} from '@ionic-native/status-bar/ngx'
-//import {Router} from '@angular/router'
+import {Router} from '@angular/router'
 import {RService} from './services/r.service'
 import {ApiClientService} from './services/api-client.service'
 
@@ -49,8 +48,7 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private navCtrl:NavController,
-    //private router: Router,
+    private router: Router,
     private r: RService,
     private apiService: ApiClientService
   ) {
@@ -69,20 +67,17 @@ export class AppComponent {
       console.log('UserInfoKey--userInfo:',userInfo);
 
       if (!apiRootUrl || apiRootUrl === '') {
-        await this.navCtrl.navigateRoot('/sysEntryDetail');
-        //this.router.navigateByUrl('/sysEntryDetail')
+        this.router.navigateByUrl('/sysEntryDetail')
       } else if (!userInfo || userInfo.UserName == '') {
         console.log('is not login--');
-        
-        await this.navCtrl.navigateRoot('/login');
-        //this.router.navigateByUrl('/login')
+        this.router.navigateByUrl('/login')
         //this.router.navigate(['/login'])
       } else {
         const userInfo = await this.apiService.getData(this.r.UserInfoKey)
         if (userInfo.RoleName === this.r.RolesOptions[0]) {
-          this.navCtrl.navigateForward('/orderPackageDetail')
+          this.router.navigateByUrl('/orderPackageDetail');
         } else {
-          this.navCtrl.navigateForward('/orderDetail')
+          this.router.navigateByUrl('/orderDetail');
         }
       }
     })
