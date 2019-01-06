@@ -1,6 +1,8 @@
 {
   "name": "IotClient",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular",
   "id": "eb9751b6"
 }
