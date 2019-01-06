@@ -23,6 +23,7 @@
           <ion-list *ngFor="let item of orders">
               <ion-item>
                 <ion-label>订单：{{item.OrderCode}}</ion-label>
+                <ion-label>订单：{{toOrderStatusName(item.Status)}}</ion-label>
               </ion-item>
               <ion-card>
                   <ion-item>

@@ -135,6 +135,8 @@ export class ApiClientService {
         return '发货中';
       case 2:
         return '已打包';
+      case 99:
+        return '已签收';
       default:
         return '未知'
     }
