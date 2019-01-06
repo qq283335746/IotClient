@@ -5,6 +5,7 @@ import { OrderInfo } from '../../models/OrderInfo'
 import { Router } from '@angular/router';
 import { OrderRequestInfo } from 'src/app/models/OrderRequestInfo';
 import { UserInfo } from 'src/app/models/UserInfo';
+import { OrderSendModel } from 'src/app/models/OrderSendModel';
 
 @Component({
   selector: 'app-orderDetail',
@@ -16,19 +17,13 @@ export class OrderDetailPage implements OnInit {
     private router: Router,
     private r: RService,
     private apiService: ApiClientService
-  ) {
-    this.orders = new Array<OrderInfo>()
-  }
+  ) {}
 
   userInfo = new UserInfo();
-  orderInfo = new OrderInfo();
   orderInfoSelected = new OrderInfo();
+  orderSendModel:OrderSendModel = {Orders:[],Remark:'',BatchRandomCode:this.r.getRndOrderCode()};
 
   barcode: string;
-  orders: Array<OrderInfo>;
-  isMainOrder: boolean;
-  remark: string;
-  batchRandomCode: string = this.r.getRndOrderCode();
 
   async ngOnInit() {
     console.log('ngOnInit--');
@@ -36,24 +31,11 @@ export class OrderDetailPage implements OnInit {
     await this.loadData();
   }
 
-  async loadData(): Promise<void> {
-    //this.userInfo
-    this.orders = await this.apiService.getData(this.r.OrdersKey)
-    if (!this.orders || this.orders.length == 0) this.orders = []
-    else {
-      this.batchRandomCode = this.orders[0].BatchRandomCode;
+  async loadData(){
+    this.orderSendModel = await this.apiService.getData(this.r.OrderSendKey);
+    if(!this.orderSendModel) {
+      this.orderSendModel = {Orders:[],Remark:'', BatchRandomCode:this.r.getRndOrderCode()};
     }
-    console.log('batchRandomCode:', this.batchRandomCode);
-  }
-
-  isExistBarcode(barcode: string): boolean {
-    if (!this.orders) return false
-
-    for (let entity of this.orders) {
-      if (entity && entity.Barcode === barcode) return true
-    }
-
-    return false
   }
 
   async onBarcodeChanged(): Promise<void> {
@@ -66,36 +48,53 @@ export class OrderDetailPage implements OnInit {
       return
     }
 
-    if (this.orders.length == 0) {
+    if(!this.orderSendModel.BatchRandomCode || this.orderSendModel.BatchRandomCode === '') this.orderSendModel.BatchRandomCode = this.r.getRndOrderCode();
+
+    if (this.orderSendModel.Orders.length == 0) {
       this.orderInfoSelected.Id = this.r.GuidEmpty;
       this.orderInfoSelected.Barcode = this.barcode;
-      this.isMainOrder = true;
+      this.orderInfoSelected.IsMainOrder = true;
     }
 
     let orderInfo = new OrderInfo();
     orderInfo.Id = this.r.GuidEmpty;
     orderInfo.Barcode = this.barcode;
-    orderInfo.IsMainOrder = this.orders.length == 0;
-    orderInfo.BatchRandomCode = this.batchRandomCode;
+    orderInfo.IsMainOrder = this.orderSendModel.Orders.length == 0;
+    orderInfo.BatchRandomCode = this.orderSendModel.BatchRandomCode;
 
-    this.orders.push(orderInfo)
-    await this.apiService.setData(this.r.OrdersKey, this.orders)
+    this.orderSendModel.Orders.push(orderInfo);
+    await this.apiService.setData(this.r.OrderSendKey, this.orderSendModel);
 
     this.resetScan();
+  }
+
+  isExistBarcode(barcode: string): boolean {
+    if (!this.orderSendModel.Orders) return false
+
+    for (let entity of this.orderSendModel.Orders) {
+      if (entity && entity.Barcode === barcode) return true
+    }
+
+    return false
+  }
+
+  async onRemarkChanged(){
+    console.log('onRemarkChanged--');
+    await this.apiService.setData(this.r.OrderSendKey, this.orderSendModel);
   }
 
   onDelete(): void {
     let curr = this
     this.r.alertConfirm(null, this.r.M_Delete_Confirm, async function () {
-      curr.orders = []
-      await curr.apiService.removeData(curr.r.OrdersKey)
+      await curr.clearData();
       curr.r.alert(null, null, curr.r.M_Save_Success)
     })
   }
 
   async onCommit() {
     console.log('OrderDetailPage,onCommit--')
-    if (this.orders.length < 1) {
+    console.log('this.batchRandomCode:',this.orderSendModel.BatchRandomCode);
+    if (this.orderSendModel.Orders.length < 1) {
       this.r.alert(null, null, this.r.M_Save_DataEmpty);
     }
     if (!this.commitChecked()) return;
@@ -125,12 +124,12 @@ export class OrderDetailPage implements OnInit {
       return false;
     }
 
-    for (let entity of this.orders) {
+    for (let entity of this.orderSendModel.Orders) {
       if (entity && !entity.IsMainOrder) {
         let orderRequestInfo = new OrderRequestInfo();
         orderRequestInfo.OrderCode = entity.Barcode;
         orderRequestInfo.ParentOrderCode = mainOrderInfo.OrderCode;
-        orderRequestInfo.BatchRandomCode = this.batchRandomCode;
+        orderRequestInfo.BatchRandomCode = this.orderSendModel.BatchRandomCode;
 
         apiResult = await this.apiService.SaveOrderAsync(this.r.OrdersKey, JSON.stringify(orderRequestInfo));
         if (apiResult.ResCode != 1000) {
@@ -144,10 +143,10 @@ export class OrderDetailPage implements OnInit {
   }
 
   commitChecked(): boolean {
-    if (!this.orders) return false
+    if (!this.orderSendModel.Orders) return false
     let mainOrderNum: number = 0
     let curr = this
-    for (let entity of curr.orders) {
+    for (let entity of curr.orderSendModel.Orders) {
       if (entity && entity.IsMainOrder) {
         mainOrderNum++
       }
@@ -161,13 +160,13 @@ export class OrderDetailPage implements OnInit {
   }
 
   getMainOrderInfo(): OrderRequestInfo {
-    for (let entity of this.orders) {
+    for (let entity of this.orderSendModel.Orders) {
       if (entity && entity.IsMainOrder) {
         let orderRequestInfo = new OrderRequestInfo();
         orderRequestInfo.OrderCode = entity.Barcode;
         orderRequestInfo.ParentOrderCode = '';
-        orderRequestInfo.Remark = this.remark;
-        orderRequestInfo.BatchRandomCode = this.batchRandomCode;
+        orderRequestInfo.Remark = this.orderSendModel.Remark;
+        orderRequestInfo.BatchRandomCode = this.orderSendModel.BatchRandomCode;
 
         return orderRequestInfo;
       }
@@ -183,8 +182,11 @@ export class OrderDetailPage implements OnInit {
   }
 
   async clearData() {
-    await this.apiService.removeData(this.r.OrdersKey);
-    this.orders = [];
-    this.remark = '';
+    await this.apiService.removeData(this.r.OrderSendKey);
+    this.orderSendModel = {
+      Orders:[],
+      Remark:'',
+      BatchRandomCode:this.r.getRndOrderCode()
+    }
   }
 }

@@ -8,9 +8,14 @@ ubuntu environment:
 ubuntu android studio:
 sudo /home/tygasoft/ProgramFiles/android-studio/bin/studio.sh /usr/local/bin/android-studio/studio.sh
 
+ubuntu postman:
+sudo tar -xzf Postman-linux-x64-6.6.1.tar.gz
+sudo ln -s Postman /usr/bin/Postman
+
 root权限：
 sudo -s
 rm -r ionic
+rm -r Postman
 
 官方：install nodejs:
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
@@ -27,8 +32,9 @@ https://nodejs.org/en/download/
 xz -d node-v6.10.1-linux-x64.tar.xz
 tar -xvf node-v6.10.1-linux-x64.tar
 tar xvJf node-v10.14.2-linux-x64.tar.xz
-
-tar xvJf Postman-linux-x64-6.6.1.tar.gz
+sudo tar -xzf Postman-linux-x64-6.6.1.tar.gz
+sudo ln -s Postman   /usr/bin/
+ln -s Postman /usr/local/bin/Postman
 
 ln -s /home/tygasoft/ProgramFiles/node-v10.14.2-linux-x64/bin/node /usr/local/bin/node
 ln -s /home/tygasoft/ProgramFiles/node-v10.14.2-linux-x64/bin/npm /usr/local/bin/npm

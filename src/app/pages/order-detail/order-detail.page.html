@@ -17,7 +17,7 @@
     (ionChange)="onBarcodeChanged()"
     [(ngModel)]="barcode"
   ></ion-searchbar>
-  <ion-list *ngFor="let item of orders">
+  <ion-list *ngFor="let item of orderSendModel.Orders">
     <ion-item>
       <ion-label>{{ item.Barcode }}</ion-label>
       <ion-toggle [(ngModel)]="item.IsMainOrder"></ion-toggle>
@@ -28,7 +28,7 @@
 <ion-footer>
   <ion-item>
     <ion-label>备注：</ion-label>
-    <ion-input type="text" [(ngModel)]="remark"></ion-input>
+    <ion-input type="text" [(ngModel)]="orderSendModel.Remark" (ionChange)="onRemarkChanged()"></ion-input>
   </ion-item>
   <ion-button expand="full" (click)="onCommit()">提交</ion-button>
 </ion-footer>

@@ -18,6 +18,7 @@ export class RService {
   Api_Hello: string = '/Services/PdaService.svc/GetHelloWord'
   Api_Login: string = this.ApiRootUrl + '/Login'
   OrdersKey: string = 'Orders'
+  OrderSendKey:string='OrderSend'
   OrderPackagesKey: string = 'OrderPackages'
   OrderBackKey: string = 'OrderBack'
   UserInfoKey: string = 'UserInfo'
