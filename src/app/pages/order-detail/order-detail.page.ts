@@ -13,18 +13,23 @@ import { OrderSendModel } from 'src/app/models/OrderSendModel';
   styleUrls: ['./order-detail.page.scss'],
 })
 export class OrderDetailPage implements OnInit {
+
+  userInfo = new UserInfo();
+  orderInfoSelected = new OrderInfo();
+  orderSendModel:OrderSendModel = {Orders:[],Remark:'',BatchRandomCode:this.r.getRndOrderCode()};
+  barcode: string;
+
   constructor(
     private router: Router,
     private zone:NgZone,
     private r: RService,
     private apiService: ApiClientService
-  ) {}
-
-  userInfo = new UserInfo();
-  orderInfoSelected = new OrderInfo();
-  orderSendModel:OrderSendModel = {Orders:[],Remark:'',BatchRandomCode:this.r.getRndOrderCode()};
-
-  barcode: string;
+  ) 
+  {
+    this.zone.run(()=>{
+      this.resetScan();
+    })
+  }
 
   async ngOnInit() {
     console.log('ngOnInit--');
@@ -177,11 +182,9 @@ export class OrderDetailPage implements OnInit {
   }
 
   resetScan(){
-    this.zone.run(()=>{
-      setTimeout(() => {
-        this.barcode = '';
-      }, 100);
-    })
+    setTimeout(() => {
+      this.barcode = '';
+    }, 100);
   }
 
   async clearData() {

@@ -12,11 +12,11 @@
 <ion-content padding>
   <ion-card>
     <ion-card-header>
-      <ion-card-title>新订单号：{{orderPackageInfo.ParentOrder}}</ion-card-title>
+      <ion-card-title>新订单号：{{orderPackageModel.ParentOrder}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-searchbar searchIcon="contract" placeholder="请扫描条码" (ionChange)="onBarcodeChanged()" [(ngModel)]="barcode"></ion-searchbar>
-      <ion-list *ngFor="let item of orderPackageInfo.Orders">
+      <ion-list *ngFor="let item of orderPackageModel.Orders">
         <ion-item>
           <ion-label>{{item.Barcode}}</ion-label>
         </ion-item>

@@ -11,7 +11,9 @@ import { ApiClientService } from 'src/app/services/api-client.service';
 export class OrderBackPage implements OnInit {
 
   constructor(private router: Router,private zone:NgZone,private r: RService,private apiService: ApiClientService) { 
-
+    this.zone.run(()=>{
+      this.resetScan();
+    })
   }
 
   barcode: string;
@@ -82,11 +84,9 @@ export class OrderBackPage implements OnInit {
   }
 
   resetScan() {
-    this.zone.run(()=>{
-      setTimeout(() => {
-        this.barcode = '';
-      }, 100);
-    })
+    setTimeout(() => {
+      this.barcode = '';
+    }, 100);
   }
 
   clearData(){

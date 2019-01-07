@@ -104,3 +104,21 @@ https://www.joshmorony.com/converting-ionic-3-push-pop-navigation-to-angular-rou
 
 Adding Background Geolocation to an Ionic 2 & 3 Application：
 https://www.joshmorony.com/adding-background-geolocation-to-an-ionic-2-application/
+
+angular:
+视图刷新：ChangeDetectorRef、NgZone
+类：clss，接口：interface
+继承类：extends，实现接口：implements
+TypeScript:https://www.tslang.cn
+
+Promise代码：
+return new Promise((resolve, reject) => {
+      let request = this.indexedDB.open(dbName, dbVersion);
+      request.onerror = function(event) {
+        reject("IndexedDB数据库打开错误，" + event);
+      };
+      request.onsuccess = function(event) {
+        resolve(event.target.result);
+      };
+    });
+}

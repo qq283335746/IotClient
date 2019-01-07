@@ -1,6 +1,6 @@
 import {OrderInfo} from './OrderInfo'
 
-export class OrderPackageInfo {
+export class OrderPackageModel {
   ParentOrder: string;
   Orders: Array<OrderInfo>;
   BatchRandomCode:string;

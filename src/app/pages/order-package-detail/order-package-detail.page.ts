@@ -2,7 +2,7 @@ import { Router } from '@angular/router'
 import { ApiClientService } from './../../services/api-client.service'
 import { Component, OnInit, NgZone } from '@angular/core'
 import { RService } from 'src/app/services/r.service'
-import { OrderPackageInfo } from 'src/app/models/OrderPackageInfo'
+import { OrderPackageModel } from 'src/app/models/OrderPackageModel'
 import { OrderInfo } from 'src/app/models/OrderInfo'
 import { OrderRequestInfo } from 'src/app/models/OrderRequestInfo';
 
@@ -12,49 +12,39 @@ import { OrderRequestInfo } from 'src/app/models/OrderRequestInfo';
   styleUrls: ['./order-package-detail.page.scss'],
 })
 export class OrderPackageDetailPage implements OnInit {
+
+  orderPackageModel: OrderPackageModel = {
+    ParentOrder: this.r.getRndOrderCode(),
+    Orders: [],
+    BatchRandomCode: this.r.getRndOrderCode()
+  }
+  orderInfo: OrderInfo;
+  barcode: string;
+
   constructor(
     private router: Router,
     private zone:NgZone,
     private apiService: ApiClientService,
     private r: RService
-  ) { }
-
-  orderPackageInfo: OrderPackageInfo = {
-    ParentOrder: this.r.getRndOrderCode(),
-    Orders: [],
-    BatchRandomCode: this.r.getRndOrderCode()
+  ) 
+  { 
+    this.zone.run(()=>{
+      this.resetScan();
+    })
   }
-  orderInfo: OrderInfo
-  //orderPackages: Array<OrderPackageInfo>
-  barcode: string;
-  batchRandomCode: string = this.r.getRndOrderCode();
 
-  ngOnInit() {
-    this.loadData()
+  async ngOnInit() {
+    await this.loadData();
   }
 
   async loadData() {
-    const oldOrderPackageInfo = await this.apiService.getData(
+    const oldOrderPackageModel = await this.apiService.getData(
       this.r.OrderPackagesKey
     )
-    if (oldOrderPackageInfo) {
-      this.orderPackageInfo = oldOrderPackageInfo;
-      this.batchRandomCode = oldOrderPackageInfo.BatchRandomCode;
+    if (oldOrderPackageModel) {
+      this.orderPackageModel = oldOrderPackageModel;
+      this.orderPackageModel.BatchRandomCode = oldOrderPackageModel.BatchRandomCode;
     }
-  }
-
-  isExistBarcode(barcode: string): boolean {
-    if (
-      !this.orderPackageInfo.Orders ||
-      this.orderPackageInfo.Orders.length == 0
-    )
-      return false
-
-    for (let entity of this.orderPackageInfo.Orders) {
-      if (entity && entity.Barcode === barcode) return true
-    }
-
-    return false
   }
 
   async onBarcodeChanged() {
@@ -71,15 +61,29 @@ export class OrderPackageDetailPage implements OnInit {
       Id: this.r.GuidEmpty,
       Barcode: this.barcode,
       IsMainOrder: false,
-      BatchRandomCode: this.orderPackageInfo.ParentOrder
+      BatchRandomCode: this.orderPackageModel.BatchRandomCode
     }
-    this.orderPackageInfo.Orders.push(this.orderInfo)
+    this.orderPackageModel.Orders.push(this.orderInfo);
     await this.apiService.setData(
       this.r.OrderPackagesKey,
-      this.orderPackageInfo
+      this.orderPackageModel
     )
 
     this.resetScan();
+  }
+
+  isExistBarcode(barcode: string): boolean {
+    if (
+      !this.orderPackageModel.Orders ||
+      this.orderPackageModel.Orders.length == 0
+    )
+      return false
+
+    for (let entity of this.orderPackageModel.Orders) {
+      if (entity && entity.Barcode === barcode) return true
+    }
+
+    return false
   }
 
   onDelete() {
@@ -112,9 +116,9 @@ export class OrderPackageDetailPage implements OnInit {
   async saveToServer(): Promise<Boolean> {
 
     let mainOrderInfo = new OrderRequestInfo();
-    mainOrderInfo.OrderCode = this.orderPackageInfo.ParentOrder;
+    mainOrderInfo.OrderCode = this.orderPackageModel.ParentOrder;
     mainOrderInfo.ParentOrderCode = '';
-    mainOrderInfo.BatchRandomCode = this.batchRandomCode;
+    mainOrderInfo.BatchRandomCode = this.orderPackageModel.BatchRandomCode;
 
     let apiResult = await this.apiService.SaveOrderAsync(this.r.OrderPackagesKey, JSON.stringify(mainOrderInfo));
     console.log('apiResult:', apiResult);
@@ -123,11 +127,11 @@ export class OrderPackageDetailPage implements OnInit {
       return false;
     }
 
-    for (let entity of this.orderPackageInfo.Orders) {
+    for (let entity of this.orderPackageModel.Orders) {
       let orderRequestInfo = new OrderRequestInfo();
       orderRequestInfo.OrderCode = entity.Barcode;
-      orderRequestInfo.ParentOrderCode = this.orderPackageInfo.ParentOrder;
-      orderRequestInfo.BatchRandomCode = this.batchRandomCode;
+      orderRequestInfo.ParentOrderCode = this.orderPackageModel.ParentOrder;
+      orderRequestInfo.BatchRandomCode = this.orderPackageModel.BatchRandomCode;
 
       apiResult = await this.apiService.SaveOrderAsync(this.r.OrderPackagesKey, JSON.stringify(orderRequestInfo));
     }
@@ -136,16 +140,14 @@ export class OrderPackageDetailPage implements OnInit {
   }
 
   resetScan(){
-    this.zone.run(()=>{
-      setTimeout(() => {
-        this.barcode = '';
-      }, 100);
-    })
+    setTimeout(() => {
+      this.barcode = '';
+    }, 100);
   }
 
   async clearData(): Promise<void> {
     await this.apiService.removeData(this.r.OrderPackagesKey);
-    this.orderPackageInfo = {
+    this.orderPackageModel = {
       ParentOrder: this.r.getRndOrderCode(),
       Orders: [],
       BatchRandomCode:this.r.getRndOrderCode()
