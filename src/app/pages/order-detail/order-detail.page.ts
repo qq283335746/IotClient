@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, NgZone } from '@angular/core'
 import { RService } from './../../services/r.service'
 import { ApiClientService } from './../../services/api-client.service'
 import { OrderInfo } from '../../models/OrderInfo'
@@ -15,6 +15,7 @@ import { OrderSendModel } from 'src/app/models/OrderSendModel';
 export class OrderDetailPage implements OnInit {
   constructor(
     private router: Router,
+    private zone:NgZone,
     private r: RService,
     private apiService: ApiClientService
   ) {}
@@ -176,9 +177,11 @@ export class OrderDetailPage implements OnInit {
   }
 
   resetScan(){
-    setTimeout(() => {
-      this.barcode = '';
-    }, 100);
+    this.zone.run(()=>{
+      setTimeout(() => {
+        this.barcode = '';
+      }, 100);
+    })
   }
 
   async clearData() {

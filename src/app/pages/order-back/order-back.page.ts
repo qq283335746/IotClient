@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { RService } from 'src/app/services/r.service';
 import { ApiClientService } from 'src/app/services/api-client.service';
@@ -10,7 +10,7 @@ import { ApiClientService } from 'src/app/services/api-client.service';
 })
 export class OrderBackPage implements OnInit {
 
-  constructor(private router: Router,private r: RService,private apiService: ApiClientService) { 
+  constructor(private router: Router,private zone:NgZone,private r: RService,private apiService: ApiClientService) { 
 
   }
 
@@ -82,9 +82,11 @@ export class OrderBackPage implements OnInit {
   }
 
   resetScan() {
-    setTimeout(() => {
-      this.barcode = '';
-    }, 100);
+    this.zone.run(()=>{
+      setTimeout(() => {
+        this.barcode = '';
+      }, 100);
+    })
   }
 
   clearData(){
