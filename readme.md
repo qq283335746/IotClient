@@ -2,6 +2,10 @@ Source Local Dir:
 /home/tygasoft/Tyga/GitHub/IotServer/Src/TygaSoft
 /home/tygasoft/Tyga/GitHub/IotClient
 
+vscode使用技巧：
+Ctrl+Shift+O：在当前文档中快速定位所有标签；
+ctrl+t:查找内容，列出所在文件；
+
 ubuntu environment:
 /etc/environment
 
